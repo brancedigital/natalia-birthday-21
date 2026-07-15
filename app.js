@@ -14,7 +14,7 @@ const CONFIG = {
   // ⏱️ TIEMPO DE ESPERA ENTRE CUPONES
   // MODO PRUEBA: 1 minuto. Para el día real, cambia a 7 días:
   // cooldownMs: 7 * 24 * 60 * 60 * 1000,
-  cooldownMs: 60 * 1000,
+  cooldownMs: 7 * 24 * 60 * 60 * 1000,
 
   restaurant: 'SushiClub',
   lunchTime: '14:00',
