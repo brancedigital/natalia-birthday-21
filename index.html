@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<title>Felices 21, Natalia 💜</title>
+<meta name="description" content="Un caminito de sorpresas para tus 21 💜">
+<meta name="theme-color" content="#1b1035">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/png" href="./icons/icon-192.png">
+<link rel="apple-touch-icon" href="./icons/icon-180.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Natalia 21">
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<div id="phone">
+  <header id="topbar">
+    <button id="titleBtn" type="button">Felices 21, Natalia <span class="beat">💜</span></button>
+    <div class="topbar-right">
+      <span id="progressBadge">0/9</span>
+      <button id="muteBtn" type="button" aria-label="sonido">🔊</button>
+    </div>
+  </header>
+  <div id="app">
+    <main id="world" aria-label="camino de sorpresas"></main>
+  </div>
+
+  <section id="couponsView" hidden>
+    <header id="couponsBar">
+      <button id="backBtn" type="button">← Volver al camino</button>
+    </header>
+    <div id="couponsScroll">
+      <div id="couponsHead">
+        <div class="spa-crest">✨</div>
+        <h1>Cupones de Oro</h1>
+        <p class="spa-sub">SPA PRIVADO DE NATALIA · 5 masajes, cero excusas</p>
+        <div id="expiryChip"></div>
+      </div>
+      <div id="couponsList"></div>
+      <p id="couponsRules"></p>
+    </div>
+  </section>
+
+  <div id="overlay" hidden>
+    <div id="card" role="dialog" aria-modal="true"></div>
+  </div>
+
+  <div id="fx" aria-hidden="true"></div>
+</div>
+
+<script src="./app.js"></script>
+<script>
+  if ('serviceWorker' in navigator) {
+    addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+  }
+</script>
+</body>
+</html>
