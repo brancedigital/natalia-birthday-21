@@ -4,6 +4,14 @@
 
 * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
+@font-face {
+  font-family: 'Montserrat';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('./fonts/montserrat-var.woff2') format('woff2');
+}
+
 :root {
   --gold: #ffd23f;
   --gold-deep: #d4a017;
@@ -12,7 +20,7 @@
   --night: #141433;
   --ink: #2b2140;
   --card-r: 26px;
-  --font: "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font: "Montserrat", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
 }
 
 html, body {
@@ -51,6 +59,10 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 }
 
 #app { position: absolute; inset: 0; overflow-y: auto; overflow-x: hidden; scroll-behavior: auto; }
+
+/* scroll invisible pero funcional (drag/swipe) */
+#app, #couponsScroll, #card { scrollbar-width: none; -ms-overflow-style: none; }
+#app::-webkit-scrollbar, #couponsScroll::-webkit-scrollbar, #card::-webkit-scrollbar { display: none; width: 0; height: 0; }
 
 /* ---------- top bar ---------- */
 #topbar {
@@ -162,7 +174,7 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   pointer-events: none; width: 130px; text-align: center;
 }
 .node-label .nl-name {
-  font-size: 12.5px; font-weight: 800; color: #fff;
+  font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap;
   background: rgba(20,16,45,.55); padding: 3px 10px; border-radius: 999px;
   backdrop-filter: blur(2px);
 }
@@ -352,13 +364,20 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   position: relative;
 }
 #card .close-x {
-  position: absolute; top: 10px; right: 12px; font-size: 20px; font-weight: 700;
-  color: #b6aecb; width: 34px; height: 34px;
+  position: absolute; top: 12px; right: 12px; z-index: 3;
+  width: 34px; height: 34px; border-radius: 50%;
+  font-size: 16px; font-weight: 800; line-height: 1;
+  color: #7a6ba3; background: rgba(120,100,180,.12);
+  display: flex; align-items: center; justify-content: center;
+}
+#card.papyrus .close-x {
+  top: 24px; right: 14px;
+  color: #6e4a17; background: rgba(120,80,20,.16);
 }
 #card .big-emoji { font-size: 56px; line-height: 1.1; display: block; margin-bottom: 8px; }
-#card h2 { font-size: 21px; font-weight: 900; margin-bottom: 10px; }
-#card p  { font-size: 15px; line-height: 1.55; color: #56497a; margin-bottom: 10px; }
-#card .hint { font-size: 12.5px; color: #9a8fc0; }
+#card h2 { font-size: 20px; font-weight: 900; margin-bottom: 10px; text-wrap: balance; }
+#card p  { font-size: 14.5px; line-height: 1.55; color: #56497a; margin-bottom: 10px; text-wrap: balance; }
+#card .hint { font-size: 12px; color: #9a8fc0; }
 
 .btn {
   display: inline-block; width: 100%; margin-top: 12px;
@@ -409,20 +428,22 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   animation: unroll .8s cubic-bezier(.2,1.2,.4,1); transform-origin: top center;
   color: #4d3a14;
 }
+#card.papyrus { padding: 20px 22px 20px; }
 #card.papyrus::before, #card.papyrus::after {
   content: ""; position: sticky; display: block; left: 0; right: 0; height: 16px;
   background: linear-gradient(180deg, #b98a3e, #8a5f22 55%, #6e4a17);
   border-radius: 999px; box-shadow: 0 3px 6px rgba(0,0,0,.3);
 }
-#card.papyrus::before { top: 0; margin: -14px -8px 14px; }
-#card.papyrus::after  { bottom: 0; margin: 14px -8px -14px; }
+#card.papyrus::before { top: 0; margin: 0 -6px 22px; }
+#card.papyrus::after  { bottom: 0; margin: 22px -6px 0; }
 @keyframes unroll { from { transform: scaleY(.08); opacity: .4; } to { transform: scaleY(1); opacity: 1; } }
-#card.papyrus h2 { font-family: Georgia, "Times New Roman", serif; color: #4d3a14; }
+#card.papyrus h2 { color: #4d3a14; }
 #card.papyrus p { color: #6a5323; }
 .plan-list { list-style: none; text-align: left; margin: 12px 0 4px; }
 .plan-list li {
-  font-size: 15.5px; font-weight: 700; color: #4d3a14; line-height: 1.4;
-  padding: 10px 6px; border-bottom: 1.5px dashed rgba(120,85,25,.35);
+  font-size: 14px; font-weight: 700; color: #4d3a14; line-height: 1.4;
+  padding: 10px 4px; border-bottom: 1.5px dashed rgba(120,85,25,.35);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .plan-list li:last-child { border-bottom: none; }
 .plan-warn {

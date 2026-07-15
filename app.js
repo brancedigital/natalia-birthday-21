@@ -16,7 +16,8 @@ const CONFIG = {
   // cooldownMs: 7 * 24 * 60 * 60 * 1000,
   cooldownMs: 60 * 1000,
 
-  restaurant: 'nuestro restaurante colombiano favorito',
+  restaurant: 'SushiClub',
+  lunchTime: '14:00',
   movieTime: '8:00 PM',
 };
 
@@ -134,20 +135,20 @@ const STEPS = [
   { id: 'desayuno', mystIcon: '🍳', doneIcon: '🍳', mystName: 'Desayuno',    doneName: 'Desayuno',     time: '🌅 buenos días' },
   { id: 'flores',   mystIcon: '🔮', doneIcon: '💐', mystName: 'Misterio #1', doneName: 'Flores',       time: '⚽ una pista…' },
   { id: 'regalo',   mystIcon: '🎁', doneIcon: '🎁', mystName: 'Un regalo',   doneName: 'Cupones de oro', time: '✨ para ti' },
-  { id: 'matcha',   mystIcon: '📜', doneIcon: '🍵', mystName: 'Plan secreto', doneName: 'Matcha Mien',  time: '☀️ la tarde' },
-  { id: 'colombia', mystIcon: '🏘️', doneIcon: '🎂', mystName: 'Pueblito',    doneName: 'Cena + 🎂',    time: '🇨🇴 sabor' },
+  { id: 'matcha',   mystIcon: '📜', doneIcon: '🍵', mystName: 'Plan secreto', doneName: 'Matcha Mia',   time: '☀️ la tarde' },
+  { id: 'japon',    mystIcon: '⛩️', doneIcon: '🎂', mystName: 'Pueblito japonés', doneName: 'SushiClub + 🎂', time: '🍣 14:00' },
   { id: 'paseo',    mystIcon: '📜', doneIcon: '🕹️', mystName: 'Plan secreto', doneName: 'El paseo',    time: '🌆 caminito' },
   { id: 'arena',    mystIcon: '🏛️', doneIcon: '🎬', mystName: 'La guerra',   doneName: 'The Odyssey',  time: '⚔️ prepárate' },
   { id: 'bar',      mystIcon: '🍸', doneIcon: '🍸', mystName: 'Chill',       doneName: 'Cóctel + Catan', time: '🌙 11 PM' },
-  { id: 'casa',     mystIcon: '🏠', doneIcon: '💜', mystName: 'A casa',      doneName: 'A casa',       time: '⭐ el final' },
+  { id: 'casa',     mystIcon: '🏠', doneIcon: '🤍', mystName: 'A casa',      doneName: 'A casa',       time: '⭐ el final' },
 ];
 
 const RECAPS = [
   'Desayuno en la cama, como se debe. ✅',
   'La sala tenía flores para ti. 💐',
   '', // regalo → siempre abre los cupones
-  'Amor + sol + Matcha Mien. Tarde perfecta. 🍵',
-  'Cena colombiana… y un pastel que ya nos esperaba. 🎂',
+  'Amor + sol + Matcha Mia. Tarde perfecta. 🍵',
+  'SushiClub: ceviche, sushi… y un pastel sorpresa. 🎂',
   'Sol Mall, recreativos y el centro. 🕹️',
   'Sobrevivimos a la guerra de Nolan. 🎬',
   'Cóctel, Catan y nosotros. 🥂',
@@ -155,25 +156,33 @@ const RECAPS = [
 ];
 
 /* ---------------- SVG decor builders ---------------- */
-function svgHouse(x, w, body, trim, roof) {
-  const doorW = Math.round(w * 0.26), doorX = x + Math.round(w * 0.37);
-  return `<polygon points="${x - 6},52 ${x + w + 6},52 ${x + w - 9},28 ${x + 9},28" fill="${roof}"/>
-    <rect x="${x}" y="52" width="${w}" height="88" fill="${body}"/>
-    <rect x="${x}" y="114" width="${w}" height="26" fill="${trim}"/>
-    <rect x="${doorX}" y="88" width="${doorW}" height="52" rx="3" fill="${trim}" stroke="#fffdf5" stroke-width="2"/>
-    <rect x="${x + 8}" y="64" width="17" height="17" fill="#bfe6ff" stroke="${trim}" stroke-width="3"/>
-    <rect x="${x + w - 25}" y="64" width="17" height="17" fill="#bfe6ff" stroke="${trim}" stroke-width="3"/>
-    <rect x="${x + 4}" y="84" width="${w - 8}" height="4" rx="2" fill="${trim}"/>`;
+function svgMachiya(x, w) {
+  // casita japonesa antigua: madera oscura, shoji y techo con alero
+  const beams = [x + 6, x + Math.round(w / 2) - 2, x + w - 10]
+    .map(bx => `<rect x="${bx}" y="58" width="4" height="82" fill="#4a3626"/>`).join('');
+  const shoji = (sx) => `<rect x="${sx}" y="66" width="22" height="20" fill="#fff6e0" stroke="#4a3626" stroke-width="2.5"/>
+    <line x1="${sx + 11}" y1="66" x2="${sx + 11}" y2="86" stroke="#4a3626" stroke-width="1.5"/>
+    <line x1="${sx}" y1="76" x2="${sx + 22}" y2="76" stroke="#4a3626" stroke-width="1.5"/>`;
+  return `<polygon points="${x - 12},58 ${x + w + 12},58 ${x + w + 4},40 ${x + w - 6},34 ${x + 6},34 ${x - 4},40" fill="#3b4252"/>
+    <rect x="${x + 4}" y="30" width="${w - 8}" height="6" rx="3" fill="#2e3440"/>
+    <rect x="${x}" y="58" width="${w}" height="82" fill="#f2ead8"/>
+    ${beams}
+    ${shoji(x + 14)}${shoji(x + w - 38)}
+    <rect x="${x + Math.round(w / 2) - 12}" y="96" width="24" height="44" rx="2" fill="#4a3626"/>
+    <line x1="${x + Math.round(w / 2)}" y1="96" x2="${x + Math.round(w / 2)}" y2="140" stroke="#f2ead8" stroke-width="2"/>`;
 }
-function svgPueblo() {
+function svgTorii(x) {
+  return `<rect x="${x - 14}" y="40" width="96" height="10" rx="4" fill="#c0392b"/>
+    <rect x="${x - 4}" y="54" width="76" height="7" fill="#c0392b"/>
+    <rect x="${x}" y="50" width="9" height="90" fill="#a93226"/>
+    <rect x="${x + 59}" y="50" width="9" height="90" fill="#a93226"/>`;
+}
+function svgJapan() {
   return `<svg class="svg-decor" viewBox="0 0 430 150" width="100%" preserveAspectRatio="xMidYMax meet">
-    <polygon points="-10,150 90,54 190,150" fill="#5f8f5a" opacity=".65"/>
-    <polygon points="140,150 260,38 380,150" fill="#4c7a49" opacity=".6"/>
-    <polygon points="300,150 400,64 470,150" fill="#5f8f5a" opacity=".55"/>
-    ${svgHouse(14, 92, '#fdf6ec', '#e2574c', '#a9442f')}
-    ${svgHouse(118, 92, '#fdf6ec', '#2e86c1', '#8f6b3e')}
-    ${svgHouse(222, 92, '#fff9e8', '#e6a817', '#a9442f')}
-    ${svgHouse(326, 92, '#fdf6ec', '#27ae60', '#8f6b3e')}
+    <polygon points="20,150 200,16 380,150" fill="#8fa3c8" opacity=".55"/>
+    <polygon points="152,52 200,16 248,52" fill="#ffffff" opacity=".9"/>
+    ${svgMachiya(16, 100)}${svgMachiya(136, 100)}${svgMachiya(256, 100)}
+    ${svgTorii(372)}
   </svg>`;
 }
 function svgColumn(x) {
@@ -204,9 +213,9 @@ function svgHome() {
 }
 
 /* ---------------- zones ---------------- */
-function buntingHTML() {
-  const cols = ['#ffd23f', '#2e5fb7', '#e2574c', '#ffd23f', '#2e5fb7', '#e2574c', '#ffd23f', '#2e5fb7'];
-  return `<div class="bunting">${cols.map((c, i) => `<i style="--c:${c}; animation-delay:${i * .15}s"></i>`).join('')}</div>`;
+function lanternsHTML() {
+  return `<div style="display:flex; gap:16px;">${[0, 1, 2, 3]
+    .map(i => `<span class="sway" style="animation-delay:${i * .3}s; font-size:24px;">🏮</span>`).join('')}</div>`;
 }
 function zoneDecorHTML(i) {
   switch (i) {
@@ -232,17 +241,17 @@ function zoneDecorHTML(i) {
       <div class="decor sparkle" style="left:34%; top:300px; font-size:26px; animation-delay:1.1s">✨</div>
       <div class="decor floaty" style="right:22%; top:110px; font-size:26px;">💛</div>`;
     case 3: return `
-      <div class="decor" style="left:8%; top:110px;"><div class="shop-sign">🍵 MATCHA MIEN</div></div>
+      <div class="decor" style="left:8%; top:110px;"><div class="shop-sign">🍵 MATCHA MIA</div></div>
       <div class="decor steam-cup" style="left:14%; top:170px;">🍵
         <span class="steam"></span><span class="steam s2"></span><span class="steam s3"></span>
       </div>
       <div class="decor floaty2" style="right:12%; top:120px; font-size:26px;">☕</div>
       <div class="decor sun" style="right:-4%; top:280px; width:60px; height:60px; opacity:.9;"></div>`;
     case 4: return `
-      <div class="decor" style="left:6%; top:64px;">${buntingHTML()}</div>
-      <div class="decor" style="left:0; right:0; bottom:6px;">${svgPueblo()}</div>
-      <div class="decor floaty" style="right:8%; top:110px; font-size:24px;">☕</div>
-      <div class="decor floaty2" style="left:40%; top:96px; font-size:22px;">🌴</div>`;
+      <div class="decor" style="left:6%; top:60px;">${lanternsHTML()}</div>
+      <div class="decor" style="left:0; right:0; bottom:6px;">${svgJapan()}</div>
+      <div class="decor floaty" style="right:8%; top:110px; font-size:24px;">🌸</div>
+      <div class="decor floaty2" style="left:42%; top:96px; font-size:22px;">🌸</div>`;
     case 5: return `
       <div class="decor city" style="left:4%; bottom:12px;">
         <i style="height:70px"></i><i style="height:100px"></i><i style="height:56px"></i><i style="height:86px"></i>
@@ -317,7 +326,7 @@ function buildWorld() {
 
   // salida
   html += `<div class="start-flag" style="left:${START[0] / W * 100}%; top:${START[1] - 46}px;">🎂</div>
-    <div class="start-label" style="left:${START[0] / W * 100}%; top:${START[1] - 20}px;">aquí empieza tu día ✨</div>`;
+    <div class="start-label" style="left:${START[0] / W * 100}%; top:${START[1] - 20}px;">Aquí empieza tu día ✨</div>`;
 
   // nodos + etiquetas
   for (let i = 0; i < 9; i++) {
@@ -328,8 +337,8 @@ function buildWorld() {
       </div>`;
   }
 
-  // caminante
-  html += `<div id="walker" class="idle"><span class="aura"></span><span class="who">🚶‍♀️</span></div>`;
+  // caminantes: ella y él, de la mano 🤍
+  html += `<div id="walker" class="idle"><span class="aura"></span><span class="who">👫</span></div>`;
 
   world.innerHTML = html;
   basePathEl = $('#basePath'); progressPathEl = $('#progressPath');
@@ -378,7 +387,6 @@ function walkTo(ptIdx, done) {
   if (dist < 2) { done && done(); return; }
   const dur = clamp(dist * 3.4, 1400, 3000);
   walkerEl.classList.remove('idle');
-  whoEl.textContent = '🏃‍♀️';
   const t0 = performance.now();
   const frame = now => {
     const t = clamp((now - t0) / dur, 0, 1);
@@ -394,7 +402,6 @@ function walkTo(ptIdx, done) {
     if (t < 1) requestAnimationFrame(frame);
     else {
       walkerLen = to;
-      whoEl.textContent = '🚶‍♀️';
       walkerEl.classList.add('idle');
       done && done();
     }
@@ -513,7 +520,7 @@ function giftStage() {
       </div>
     </div>
     <div class="stage-msg">Tienes un regalo 🎁</div>
-    <div class="stage-sub">tócalo para abrirlo…</div>`);
+    <div class="stage-sub">Tócalo para abrirlo…</div>`);
   const box = $('#giftbox', st);
   let opened = false;
   box.addEventListener('click', () => {
@@ -544,7 +551,7 @@ function cakeStage(onDone) {
       <div class="plate"></div>
     </div>
     <div class="stage-msg">¿Pensabas que no habría pastel? 🎂</div>
-    <div class="stage-sub">pide un deseo y toca la pantalla para soplar…</div>`);
+    <div class="stage-sub">Pide un deseo y toca la pantalla para soplar…</div>`);
   let blown = false;
   st.addEventListener('click', () => {
     if (blown) return;
@@ -555,7 +562,7 @@ function cakeStage(onDone) {
       Snd.fanfare();
       confettiBurst(90);
       $('.stage-msg', st).textContent = '¡Feliz cumpleaños, mi amor! 💜';
-      $('.stage-sub', st).textContent = 'la sorpresa ya estaba lista desde antes 😏';
+      $('.stage-sub', st).textContent = 'La sorpresa ya estaba lista desde antes 😏';
       const btn = document.createElement('button');
       btn.className = 'btn gold';
       btn.textContent = 'Continuar 💜';
@@ -604,7 +611,7 @@ function quizCard({ emoji, title, question, options, answer, dropdown, onCorrect
     <h2>${title}</h2>
     <p>${question}</p>
     ${opts}
-    <p class="hint">responde bien para desbloquear la sorpresa 😉</p>`);
+    <p class="hint">Responde bien para desbloquear la sorpresa 😉</p>`);
   const wrongEl = $('#quizWrong', card);
   const fail = () => {
     Snd.wrong();
@@ -629,7 +636,7 @@ const STEP_OPENERS = [
   () => {
     showCard(`
       <span class="big-emoji">🍳</span>
-      <h2>¡Buenos días, cumpleañera! 🌅</h2>
+      <h2>¡Buenos días, mi amor! 🌅</h2>
       <p>Hoy cumples <b>21</b> y este caminito es todo tuyo. Cada parada esconde una sorpresa, en orden, durante todo el día.</p>
       <p>Primera misión (la más importante): <b>desayuno en la cama</b> 🥐🍓</p>
       <button class="btn" id="go">¡Listo, desayunamos! ✨</button>`);
@@ -643,8 +650,8 @@ const STEP_OPENERS = [
       <span class="big-emoji">🎉</span>
       <h2>¡Correcta!</h2>
       <p>Exacto: <b>la sala</b>. Y justo ahora, en la sala…</p>
-      <div class="reveal-box"><div class="rv-big">hay algo esperándote 👀</div>
-      <div class="rv-small">ve a verlo y luego vuelve aquí</div></div>
+      <div class="reveal-box"><div class="rv-big">Hay algo esperándote 👀</div>
+      <div class="rv-small">Ve a verlo y luego vuelve aquí</div></div>
       <button class="btn" id="saw">Ya vi lo que me esperaba 💝</button>`);
     const wire = () => $('#saw', card).addEventListener('click', () => {
       hideCard();
@@ -677,38 +684,38 @@ const STEP_OPENERS = [
       <ul class="plan-list">
         <li>💞 Darnos mucho amor</li>
         <li>🚶‍♀️🚶 Un paseo bajo el sol</li>
-        <li>🍵 Ir a <b>Matcha Mien</b> por un matcha y un café</li>
-        <li>🛋️ Quedarnos un buen rato, sin prisa, disfrutando</li>
+        <li>🍵 Matcha y café en <b>Matcha Mia</b></li>
+        <li>🛋️ Quedarnos un rato, sin prisa</li>
       </ul>
       <button class="btn gold" id="go">Ya hicimos todo esto ✅</button>`, { papyrus: true });
     $('#go', card).addEventListener('click', () => completeStep(3, { colors: ['#7bd389', '#ffd23f', '#fff', '#4dd0a1'] }));
   },
 
-  // 4 — colombia: quiz → cena → pastel
+  // 4 — japón: quiz → comida en SushiClub → pastel
   () => {
     const showReveal = () => {
       showCard(`
-        <span class="big-emoji">🇨🇴</span>
+        <span class="big-emoji">🍣</span>
         <h2>¡Tenemos reserva!</h2>
-        <p>Esta noche la cena es en <b>${CONFIG.restaurant}</b> 🍽️</p>
+        <p>Hoy comemos en <b>${CONFIG.restaurant}</b> a las <b>${CONFIG.lunchTime}</b></p>
         <div class="reveal-box">
-          <div class="rv-big">Pide TODO lo que quieras 😌</div>
-          <div class="rv-small">hoy invita el amor de tu vida · bandeja, arepas, jugos… lo que sea</div>
+          <div class="rv-big">Ceviche, sushi y cositas ricas 😋</div>
+          <div class="rv-small">Pide todo lo que quieras · Hoy invita el amor de tu vida</div>
         </div>
-        <button class="btn" id="ate">Ya cenamos, ¡qué delicia! ✅</button>`);
+        <button class="btn" id="ate">Ya comimos, ¡qué delicia! ✅</button>`);
       $('#ate', card).addEventListener('click', () => {
         hideCard();
         cakeStage(() => completeStep(4, { silent: true, confetti: false }));
       });
     };
-    if ((state.phase.colombia || 'quiz') === 'reveal') { showReveal(); return; }
+    if ((state.phase.japon || 'quiz') === 'reveal') { showReveal(); return; }
     quizCard({
-      emoji: '📖', title: 'Sabor a Colombia',
-      question: '¿Quién escribió <b>«Cien años de soledad»</b>?',
-      options: ['Pablo Neruda', 'Mario Vargas Llosa', 'Gabriel García Márquez', 'Isabel Allende'],
-      answer: 'Gabriel García Márquez',
+      emoji: '🏮', title: 'Sabor a Japón',
+      question: '¿Cómo se dice <b>«gracias»</b> en japonés? 🇯🇵',
+      options: ['Konnichiwa', 'Sayonara', 'Kanpai', 'Arigato'],
+      answer: 'Arigato',
       onCorrect: () => {
-        state.phase.colombia = 'reveal'; saveState();
+        state.phase.japon = 'reveal'; saveState();
         Snd.success();
         showReveal();
       },
@@ -721,11 +728,11 @@ const STEP_OPENERS = [
       <span class="big-emoji">📜</span>
       <h2>Mientras esperamos…</h2>
       <ul class="plan-list">
-        <li>🛍️ Caminar por el <b>Sol Mall</b> y la Galería</li>
+        <li>🛍️ Pasear el <b>Sol Mall</b> y la Galería</li>
         <li>🕹️ Jugar en los recreativos</li>
-        <li>🌆 Pasear y disfrutar el centro</li>
+        <li>🌆 Disfrutar el centro</li>
       </ul>
-      <p class="plan-warn">Disfruta todo lo que puedas… porque se acerca una guerra ⚔️🔥</p>
+      <p class="plan-warn">Disfruta lo que puedas… se acerca una guerra ⚔️🔥</p>
       <button class="btn gold" id="go">Ya lo hicimos ✅</button>`, { papyrus: true });
     $('#go', card).addEventListener('click', () => completeStep(5, { sound: 'epic', colors: ['#e8e2d0', '#ffd23f', '#c0392b', '#fff'] }));
   },
@@ -736,10 +743,10 @@ const STEP_OPENERS = [
       showCard(`
         <span class="big-emoji">🎬</span>
         <h2>¡A la guerra!</h2>
-        <p>Tenemos entradas para la función <b>PREMIER</b> de esta noche:</p>
+        <p>Tenemos entradas <b>PREMIERE</b> esta noche:</p>
         <div class="reveal-box">
           <div class="rv-big">«The Odyssey»<br>de Christopher Nolan 🌊⚔️</div>
-          <div class="rv-small">🕗 ${CONFIG.movieTime} · kit de batalla incluido:<br>🍿 palomitas · 🧀 nachos · 🥤 Pepsi Zero</div>
+          <div class="rv-small">🕗 ${CONFIG.movieTime} · Kit de batalla incluido:<br>🍿 palomitas · 🧀 nachos · 🥤 Pepsi Zero</div>
         </div>
         <button class="btn" id="saw">Ya vimos la película 🎬✅</button>`);
       $('#saw', card).addEventListener('click', () =>
@@ -775,9 +782,9 @@ const STEP_OPENERS = [
     showCard(`
       <span class="big-emoji">🏠</span>
       <h2>El final del camino</h2>
-      <p>A casa, a la cama, a darnos <b>todo el amor del mundo</b> 💜</p>
-      <p class="hint">fin del recorrido… pero apenas el comienzo de tus 21</p>
-      <button class="btn" id="go">💜 Fin</button>`);
+      <p>Nuestra casa, camita, abrazos y <b>mucho amor</b> 🤍</p>
+      <p class="hint">Fin del recorrido… pero apenas el comienzo de tus 21</p>
+      <button class="btn" id="go">Fin 🤍</button>`);
     $('#go', card).addEventListener('click', () => {
       hideCard();
       Snd.fanfare();
@@ -792,10 +799,10 @@ function showFinale() {
   showCard(`
     <span class="big-emoji">🎆</span>
     <h2 class="finale-title">¡Feliz cumpleaños, ${CONFIG.herName}!</h2>
-    <p>21 años y cada día más increíble. Gracias por existir, por tu risa y por cada momento juntos.</p>
-    <p><b>Te amo. — Jesús 💜</b></p>
+    <p>21 años y cada día más increíble. Gracias por seguir conmigo siempre, por tu sonrisa y cada momento juntos.</p>
+    <p><b>Te amo. — Jesús 🤍</b></p>
     <button class="btn" id="resetIt">🔄 Empezar el camino de nuevo</button>
-    <p class="hint">los cupones de oro no se reinician: siguen tal cual los dejaste 😌</p>`);
+    <p class="hint">Los cupones de oro no se reinician: siguen tal cual los dejaste 😌</p>`);
   $('#resetIt', card).addEventListener('click', () => {
     Snd.click();
     resetItinerary(false);
@@ -828,11 +835,11 @@ function openStep(i) {
 
 /* ---------------- cupones ---------------- */
 const COUPON_DEFS = [
-  { icon: '🦶', title: 'Masaje de pies',           sub: 'vale por 1 sesión de gloria para tus pies' },
-  { icon: '💆‍♀️', title: 'Masaje de cuerpo entero', sub: 'full body, full amor, cero prisa' },
-  { icon: '🦶', title: 'Masaje de pies',           sub: 'segunda ronda: mismos pies, más felices' },
-  { icon: '💆‍♀️', title: 'Masaje de cuerpo entero', sub: 'el regreso del masajista estrella' },
-  { icon: '🦶', title: 'Masaje de pies',           sub: 'el gran final 👣✨' },
+  { icon: '🦶', title: 'Masaje de pies',           sub: 'Vale por 1 sesión de gloria para tus pies' },
+  { icon: '💆‍♀️', title: 'Masaje de cuerpo entero', sub: 'Full body, full amor, cero prisa' },
+  { icon: '🦶', title: 'Masaje de pies',           sub: 'Segunda ronda: mismos pies, más felices' },
+  { icon: '💆‍♀️', title: 'Masaje de cuerpo entero', sub: 'El regreso del masajista estrella' },
+  { icon: '🦶', title: 'Masaje de pies',           sub: 'El gran final 👣✨' },
 ];
 const couponsView = $('#couponsView');
 const couponExpiry = new Date(CONFIG.couponExpiryISO).getTime();
@@ -859,7 +866,7 @@ function renderCoupons(force = false) {
   const chip = $('#expiryChip');
   const expDate = new Date(couponExpiry).toLocaleDateString('es', { day: 'numeric', month: 'long', year: 'numeric' });
   if (allClaimed) {
-    chip.textContent = '💛 misión cumplida';
+    chip.textContent = '💛 Misión cumplida';
     chip.classList.remove('expired');
   } else if (now > couponExpiry) {
     chip.textContent = `⛔ Expiraron el ${expDate}`;
@@ -904,7 +911,7 @@ function renderCoupons(force = false) {
       statusHTML = `<div class="cstatus">🔒 Primero canjea el cupón #${k}</div>`;
     } else {
       cls = 'expired';
-      statusHTML = `<div class="stamp gray">EXPIRADO</div><div class="cstatus">se nos pasó el tiempo 🥲</div>`;
+      statusHTML = `<div class="stamp gray">EXPIRADO</div><div class="cstatus">Se nos pasó el tiempo 🥲</div>`;
     }
     html += `<div class="coupon ${cls}" id="coupon${k}">
       <span class="shine"></span>
@@ -916,7 +923,7 @@ function renderCoupons(force = false) {
   });
   list.innerHTML = html;
   $('#couponsRules').innerHTML =
-    `Se canjean en orden, del Nº 1 al Nº 5 · entre cupón y cupón hay que esperar <b>${humanCooldown(CONFIG.cooldownMs)}</b><br>todos expiran el ${expDate} 💛`;
+    `Se canjean en orden, del Nº 1 al Nº 5 · Espera <b>${humanCooldown(CONFIG.cooldownMs)}</b> entre cupón y cupón<br>Todos expiran el ${expDate} 💛`;
 
   list.querySelectorAll('[data-redeem]').forEach(b =>
     b.addEventListener('click', () => confirmRedeem(Number(b.dataset.redeem))));
@@ -952,7 +959,7 @@ function confirmRedeem(k) {
         <p><b>Cupón Nº ${k + 1} · ${def.title}</b></p>
         <div class="reveal-box">
           <div class="rv-big">🎟️ Ticket de confirmación</div>
-          <div class="rv-small">${fmtStamp(coupons.claims[k])}<br>presenta este ticket… o simplemente acuéstate y relájate 😌</div>
+          <div class="rv-small">${fmtStamp(coupons.claims[k])}<br>Presenta este ticket… o simplemente acuéstate y relájate 😌</div>
         </div>
         <button class="btn gold" id="ok">Genial 💛</button>`);
       $('#ok', card).addEventListener('click', hideCard);
@@ -1001,7 +1008,7 @@ titleBtn.addEventListener('contextmenu', e => e.preventDefault());
     showCard(`
       <span class="big-emoji">🛠️</span>
       <h2>Menú secreto</h2>
-      <p class="hint">solo para el organizador del evento 😏</p>
+      <p class="hint">Solo para el organizador del evento 😏</p>
       <button class="btn" id="rIt">🔄 Reiniciar camino</button>
       <button class="btn ghost" id="rAll">🗑️ Reiniciar TODO (camino + cupones)</button>`);
     $('#rIt', card).addEventListener('click', () => resetItinerary(false));
