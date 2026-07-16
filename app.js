@@ -464,8 +464,7 @@ function confettiBurst(n = 70, colors = ['#ffd23f', '#ff5fa2', '#7c4dff', '#4dd0
     fx.appendChild(el);
   }
 }
-function petalRain() {
-  const petals = ['🌸', '🌷', '🌹', '💐', '🌼', '🌺'];
+function petalRain(petals = ['🌸', '🌷', '🌹', '💐', '🌼', '🌺']) {
   for (let i = 0; i < 34; i++) {
     setTimeout(() => {
       const el = document.createElement('div');
@@ -572,6 +571,57 @@ function cakeStage(onDone) {
   });
 }
 
+/* notita secreta de agradecimiento (mamá / papá) */
+const THANKS = {
+  merce: {
+    seal: '💛', noteEmoji: '🥐💛',
+    title: 'Mi mamá <b>Merce</b> también pensó en ti 💛',
+    lines: 'Este desayuno no fue solo cosa mía: ella puso su granito de amor.<br>No te diré qué hizo 😌 — solo que te quiere, que le importas,<br>y que quería que tu día empezara así de bonito.',
+    hearts: ['💛', '🤍', '💜', '🥐', '✨'],
+  },
+  javier: {
+    seal: '🤍', noteEmoji: '🍣🤍',
+    title: 'Tu papá <b>Javier</b> también fue parte de esto 🤍',
+    lines: 'Esta comida también llevó su cariño: él me ayudó a hacerla posible.<br>Pensó en ti y quiso sumarse a tu sorpresa 💜<br>Hoy te celebramos entre todos.',
+    hearts: ['🤍', '💜', '💗', '🍣', '✨'],
+  },
+};
+
+function thanksStage(t, onDone) {
+  const st = makeStage(`
+    <div class="envwrap">
+      <div class="envelope bounce" id="env">
+        <div class="env-back"></div>
+        <div class="env-note">${t.noteEmoji}</div>
+        <div class="env-front"></div>
+        <div class="env-flap"></div>
+        <div class="env-seal">${t.seal}</div>
+      </div>
+    </div>
+    <div class="stage-msg">Espera… hay una notita secreta para ti 💌</div>
+    <div class="stage-sub">Tócala para abrirla</div>`);
+  const env = $('#env', st);
+  let opened = false;
+  env.addEventListener('click', () => {
+    if (opened) return;
+    opened = true;
+    env.classList.remove('bounce');
+    env.classList.add('open');
+    Snd.success();
+    setTimeout(() => {
+      Snd.clink();
+      petalRain(t.hearts);
+      $('.stage-msg', st).innerHTML = t.title;
+      $('.stage-sub', st).innerHTML = t.lines;
+      const btn = document.createElement('button');
+      btn.className = 'btn gold';
+      btn.textContent = 'Qué bonito 💜';
+      btn.addEventListener('click', () => { Snd.click(); st.remove(); onDone && onDone(); });
+      st.appendChild(btn);
+    }, 1000);
+  });
+}
+
 /* ---------------- pasos ---------------- */
 function completeStep(i, opts = {}) {
   hideCard();
@@ -640,7 +690,10 @@ const STEP_OPENERS = [
       <p>Hoy cumples <b>21</b> y este caminito es todo tuyo. Cada parada esconde una sorpresa, en orden, durante todo el día.</p>
       <p>Primera misión (la más importante): <b>desayuno en la cama</b> 🥐🍓</p>
       <button class="btn" id="go">¡Listo, desayunamos! ✨</button>`);
-    $('#go', card).addEventListener('click', () => completeStep(0));
+    $('#go', card).addEventListener('click', () => {
+      hideCard();
+      thanksStage(THANKS.merce, () => completeStep(0));
+    });
   },
 
   // 1 — flores (quiz dropdown)
@@ -705,7 +758,8 @@ const STEP_OPENERS = [
         <button class="btn" id="ate">Ya comimos, ¡qué delicia! ✅</button>`);
       $('#ate', card).addEventListener('click', () => {
         hideCard();
-        cakeStage(() => completeStep(4, { silent: true, confetti: false }));
+        cakeStage(() =>
+          thanksStage(THANKS.javier, () => completeStep(4, { silent: true, confetti: false })));
       });
     };
     if ((state.phase.japon || 'quiz') === 'reveal') { showReveal(); return; }
