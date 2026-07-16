@@ -575,14 +575,14 @@ function cakeStage(onDone) {
 const THANKS = {
   merce: {
     seal: '💛', noteEmoji: '🥐💛',
-    title: 'Mi mamá <b>Merce</b> también pensó en ti 💛',
-    lines: 'Este desayuno no fue solo cosa mía: ella puso su granito de amor.<br>No te diré qué hizo 😌 — solo que te quiere, que le importas,<br>y que quería que tu día empezara así de bonito.',
+    title: '<b>Merce</b> también pensó en ti 💛',
+    lines: 'Ella puso su granito de ayuda, te quiere, le importas y que quería que tu día empezara así de bien.',
     hearts: ['💛', '🤍', '💜', '🥐', '✨'],
   },
   javier: {
     seal: '🤍', noteEmoji: '🍣🤍',
-    title: 'Tu papá <b>Javier</b> también fue parte de esto 🤍',
-    lines: 'Esta comida también llevó su cariño: él me ayudó a hacerla posible.<br>Pensó en ti y quiso sumarse a tu sorpresa 💜<br>Hoy te celebramos entre todos.',
+    title: 'Tu papá también fue parte de esto 🤍',
+    lines: 'Esta comida también llevó su cariño, pensó en ti y quiso invitarnos a comer 💜.',
     hearts: ['🤍', '💜', '💗', '🍣', '✨'],
   },
 };
