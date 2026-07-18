@@ -602,7 +602,7 @@ const THANKS = {
   javier: {
     seal: '🤍', noteEmoji: '🍣🤍',
     title: 'Tu papá también fue parte de esto 🤍',
-    lines: 'Esta comida llevó su cariño… y además te escribió una carta y te preparó una canción 🎶🤍.',
+    lines: 'Nos ha invitado a la comida… y además te escribió una carta y te preparó una canción 🎶🤍.',
     hearts: ['🤍', '💜', '💗', '🍣', '✨'],
     cta: 'Leer su carta 🤍',
   },
