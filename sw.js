@@ -1,5 +1,5 @@
 /* Service worker — Felices 21, Natalia 💜 */
-const CACHE = 'nb21-v4';
+const CACHE = 'nb21-v5';
 const ASSETS = [
   './',
   './index.html',
@@ -10,6 +10,7 @@ const ASSETS = [
   './icons/icon-512.png',
   './icons/icon-180.png',
   './fonts/montserrat-var.woff2',
+  './media/javier-song.mp3',
 ];
 
 self.addEventListener('install', e => {

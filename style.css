@@ -758,6 +758,132 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 
+/* ---------- carta + reproductor (recuerdos revivibles) ---------- */
+.letter-stage {
+  position: absolute; inset: 0; z-index: 72;
+  display: flex; flex-direction: column; gap: 12px;
+  padding: calc(env(safe-area-inset-top, 0px) + 16px) 18px calc(env(safe-area-inset-bottom, 0px) + 16px);
+  background:
+    radial-gradient(600px 320px at 50% -40px, rgba(180,140,60,.25), transparent 70%),
+    linear-gradient(180deg, #241a2f, #17122b 55%, #100c1f);
+  animation: stage-in .4s ease;
+  overflow: hidden;
+}
+.letter-stage.out { animation: stage-out .26s ease forwards; }
+@keyframes stage-out { to { opacity: 0; transform: scale(.98); } }
+
+.ls-head { flex: none; text-align: center; color: #fff; }
+.ls-emoji { font-size: 34px; line-height: 1; display: block; }
+.ls-head h2 { font-size: 20px; font-weight: 900; margin-top: 4px; }
+.ls-sub { font-size: 12.5px; color: #cbbcf0; margin-top: 4px; }
+
+.papiro {
+  flex: 1 1 auto; min-height: 0; position: relative;
+  border-radius: 12px; padding: 24px 10px;
+  background:
+    radial-gradient(circle at 8% 12%, rgba(140,100,40,.14), transparent 30%),
+    radial-gradient(circle at 92% 82%, rgba(140,100,40,.16), transparent 32%),
+    linear-gradient(180deg, #efdcae, #f6e9c4 20%, #f3e2b8 80%, #e8d3a0);
+  box-shadow: 0 18px 40px rgba(0,0,0,.5), inset 0 0 40px rgba(120,80,20,.18);
+}
+.papiro::before, .papiro::after {
+  content: ""; position: absolute; left: 6px; right: 6px; height: 14px; z-index: 2;
+  background: linear-gradient(180deg, #b98a3e, #8a5f22 55%, #6e4a17);
+  border-radius: 999px; box-shadow: 0 3px 6px rgba(0,0,0,.3);
+}
+.papiro::before { top: 5px; }
+.papiro::after  { bottom: 5px; }
+.papiro-inner {
+  height: 100%; overflow-y: auto; padding: 4px 12px;
+  color: #4d3a14; text-align: left;
+  scrollbar-width: none; -ms-overflow-style: none;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+          mask-image: linear-gradient(180deg, transparent 0, #000 14px, #000 calc(100% - 14px), transparent 100%);
+}
+.papiro-inner::-webkit-scrollbar { display: none; width: 0; }
+.papiro-inner p { font-size: 15px; line-height: 1.72; color: #4d3a14; margin-bottom: 13px; text-wrap: pretty; }
+.papiro-inner p:last-child { margin-bottom: 0; }
+.papiro-inner.turn { animation: page-turn .34s ease; }
+@keyframes page-turn { from { opacity: 0; transform: translateX(16px); } to { opacity: 1; transform: none; } }
+
+.ls-nav { flex: none; display: flex; align-items: center; justify-content: center; gap: 16px; }
+.ls-arrow {
+  width: 40px; height: 40px; border-radius: 50%; font-size: 24px; font-weight: 900; color: #4d3a14;
+  display: flex; align-items: center; justify-content: center; line-height: 1;
+  background: linear-gradient(135deg, #ffe9a3, #f2c14b);
+  box-shadow: 0 4px 12px rgba(0,0,0,.35);
+}
+.ls-arrow:active { transform: scale(.92); }
+.ls-arrow:disabled { opacity: .28; box-shadow: none; }
+.ls-dots { display: flex; gap: 7px; }
+.ls-dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,.28); transition: background .2s, box-shadow .2s; }
+.ls-dot.on { background: var(--gold); box-shadow: 0 0 8px var(--gold); }
+
+.player {
+  flex: none; display: flex; align-items: center; gap: 12px;
+  padding: 10px 14px; border-radius: 16px;
+  background: linear-gradient(135deg, rgba(124,77,255,.30), rgba(255,95,162,.24));
+  border: 1px solid rgba(255,255,255,.16);
+}
+.pl-play {
+  flex: none; width: 46px; height: 46px; border-radius: 50%; font-size: 15px; color: #4a3200;
+  display: flex; align-items: center; justify-content: center; line-height: 1;
+  background: linear-gradient(135deg, #ffe9a3, #ffc93f 55%, #f2a71b);
+  box-shadow: 0 6px 16px rgba(242,167,27,.5);
+}
+.pl-play:active { transform: scale(.94); }
+.pl-mid { flex: 1 1 auto; min-width: 0; }
+.pl-title { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pl-bar {
+  position: relative; height: 8px; border-radius: 999px; margin: 9px 0 5px;
+  background: rgba(255,255,255,.22); cursor: pointer; touch-action: none;
+}
+.pl-fill { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--gold), var(--pink)); }
+.pl-knob {
+  position: absolute; top: 50%; left: 0; width: 15px; height: 15px; border-radius: 50%; background: #fff;
+  transform: translate(-50%, -50%); box-shadow: 0 2px 6px rgba(0,0,0,.45);
+}
+.pl-time { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 700; color: #d8ccff; }
+.ls-done { flex: none; max-width: 100%; }
+
+/* notas musicales flotando */
+.mnote {
+  position: absolute; bottom: 8%; left: var(--x); z-index: 82;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,.35));
+  animation: mnote-rise var(--d) ease-in forwards;
+}
+@keyframes mnote-rise {
+  0%   { opacity: 0; transform: translate(0, 0) rotate(0); }
+  15%  { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx), -72vh) rotate(24deg); }
+}
+
+/* ---------- personajes revivibles en el camino ---------- */
+.revive-char {
+  position: absolute; transform: translate(-50%, -50%); z-index: 7;
+  display: flex; flex-direction: column; align-items: center; gap: 3px;
+  animation: rc-appear .5s cubic-bezier(.2,1.4,.4,1) both;
+}
+@keyframes rc-appear {
+  from { opacity: 0; transform: translate(-50%, -30%) scale(.5); }
+  to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+}
+.rc-scene {
+  position: relative; font-size: 32px; line-height: 1;
+  filter: drop-shadow(0 3px 4px rgba(0,0,0,.35));
+  animation: idle-bob 2.6s ease-in-out infinite;
+}
+.rc-main { display: inline-block; }
+.rc-prop { position: absolute; right: -15px; bottom: -3px; font-size: 21px; }
+.rc-tip {
+  font-size: 9.5px; font-weight: 800; color: #fff; white-space: nowrap;
+  background: rgba(20,16,45,.62); padding: 2px 9px; border-radius: 999px;
+  border: 1px solid rgba(255,255,255,.25); backdrop-filter: blur(2px);
+  animation: rc-tip-pulse 2s ease-in-out infinite;
+}
+@keyframes rc-tip-pulse { 0%,100% { opacity: .6; } 50% { opacity: 1; } }
+.revive-char:active .rc-scene { transform: scale(.9); }
+
 /* svg decor shared */
 .svg-decor { display: block; filter: drop-shadow(0 6px 10px rgba(0,0,0,.25)); }
 

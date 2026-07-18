@@ -340,6 +340,18 @@ function buildWorld() {
   // caminantes: ella y él, de la mano 🤍
   html += `<div id="walker" class="idle"><span class="aura"></span><span class="who">👫</span></div>`;
 
+  // personajes para revivir recuerdos (aparecen al completar su paso)
+  html += `<button class="revive-char" id="reviveMerce" type="button" hidden
+      style="left:72%; top:${NODE_XY[0][1]}px;">
+      <span class="rc-scene"><span class="rc-main">👩🏻</span><span class="rc-prop">🍳</span></span>
+      <span class="rc-tip">Revive el desayuno 💛</span>
+    </button>
+    <button class="revive-char" id="reviveJavier" type="button" hidden
+      style="left:72%; top:${NODE_XY[4][1]}px;">
+      <span class="rc-scene"><span class="rc-main">🧔🏻</span><span class="rc-prop">🎸</span></span>
+      <span class="rc-tip">Carta + canción 🤍</span>
+    </button>`;
+
   world.innerHTML = html;
   basePathEl = $('#basePath'); progressPathEl = $('#progressPath');
   walkerEl = $('#walker'); whoEl = $('.who', walkerEl);
@@ -360,6 +372,9 @@ function buildWorld() {
   for (let i = 0; i < 9; i++) {
     $('#node' + i).addEventListener('click', () => openStep(i));
   }
+
+  $('#reviveMerce').addEventListener('click', () => { Snd.click(); thanksStage(THANKS.merce, null); });
+  $('#reviveJavier').addEventListener('click', () => { Snd.click(); letterStage(LETTERS.javier, null); });
 }
 
 function setWalkerPos(x, y) {
@@ -435,6 +450,11 @@ function refresh() {
     }
   }
   $('#progressBadge').textContent = `${Math.min(state.step, 9)}/9`;
+
+  // personajes revivibles: aparecen tras completar su paso
+  const rMerce = $('#reviveMerce'), rJavier = $('#reviveJavier');
+  if (rMerce) rMerce.hidden = state.step < 1;   // tras el desayuno
+  if (rJavier) rJavier.hidden = state.step < 5; // tras la comida (paso japón)
 }
 
 /* ---------------- overlay / cards ---------------- */
@@ -582,8 +602,9 @@ const THANKS = {
   javier: {
     seal: '🤍', noteEmoji: '🍣🤍',
     title: 'Tu papá también fue parte de esto 🤍',
-    lines: 'Esta comida también llevó su cariño, pensó en ti y quiso invitarnos a comer 💜.',
+    lines: 'Esta comida llevó su cariño… y además te escribió una carta y te preparó una canción 🎶🤍.',
     hearts: ['🤍', '💜', '💗', '🍣', '✨'],
+    cta: 'Leer su carta 🤍',
   },
 };
 
@@ -615,11 +636,167 @@ function thanksStage(t, onDone) {
       $('.stage-sub', st).innerHTML = t.lines;
       const btn = document.createElement('button');
       btn.className = 'btn gold';
-      btn.textContent = 'Qué bonito 💜';
+      btn.textContent = t.cta || 'Qué bonito 💜';
       btn.addEventListener('click', () => { Snd.click(); st.remove(); onDone && onDone(); });
       st.appendChild(btn);
     }, 1000);
   });
+}
+
+/* ============================================================
+   CARTAS + REPRODUCTOR (papá / mamá) — recuerdos revivibles
+   ------------------------------------------------------------
+   ✏️  PARA EDITAR EL CONTENIDO REAL:
+   - Cambia el texto de `pages` abajo. Cada elemento del array
+     es UNA PÁGINA del pergamino. Usa \n\n para separar párrafos
+     dentro de la misma página, y \n para un salto de línea simple.
+   - La canción de Javier vive en:  ./media/javier-song.mp3
+     (para reemplazarla, deja el mismo nombre de archivo).
+   ============================================================ */
+const LETTERS = {
+  javier: {
+    emoji: '🎸',
+    title: 'Una carta de tu papá',
+    sub: 'La escribió él mismo — tómate tu tiempo 🤍',
+    song: './media/javier-song.mp3',
+    songTitle: 'Canción para ti 🎶',
+    notes: ['🎵', '🎶', '🤍', '💜', '✨'],
+    // 👇👇  REEMPLAZA ESTE TEXTO POR LA CARTA REAL DE JAVIER  👇👇
+    pages: [
+      `Mi querida Natalia,\n\nHoy cumples veintiún años y no puedo dejar pasar este día sin escribirte. Nunca he sido muy bueno con las palabras habladas, así que déjame intentarlo aquí, con calma, para que las leas cuantas veces quieras.`,
+      `Desde que llegaste a mi vida entendí lo que de verdad importa. Te vi dar tus primeros pasos, aprender a hablar, crecer y convertirte en la mujer valiente y buena que eres hoy. Cada logro tuyo lo he celebrado en silencio, con el corazón lleno de orgullo.\n\nQuiero que sepas que pase lo que pase, siempre voy a estar. En los días buenos y en los difíciles, tu papá va a estar ahí para ti.`,
+      `Sé que ya haces tu propia vida, y así debe ser. Pero para mí siempre serás mi niña. Te deseo un año lleno de amor, de risas, de aventuras y de personas que te cuiden como mereces.\n\nGracias por ser quien eres. Gracias por dejarme ser tu papá.`,
+      `Te preparé también una canción, porque hay cosas que se dicen mejor cantando. Escúchala mientras lees esto y quédate con una sola idea:\n\nTe amo, hija. Feliz cumpleaños.\n\n— Papá 🤍`,
+    ],
+    // 👆👆  FIN DEL TEXTO EDITABLE  👆👆
+  },
+  // Merce no escribió carta: su recuerdo revivible es la notita del desayuno
+  // (ver THANKS.merce). No agregues una carta inventada aquí.
+};
+
+function fmtTime(s) {
+  s = Math.max(0, Math.floor(s || 0));
+  const m = Math.floor(s / 60), ss = s % 60;
+  return `${m}:${String(ss).padStart(2, '0')}`;
+}
+
+/* notas musicales flotando mientras suena la canción */
+let noteTimer = null;
+function spawnNote(emoji) {
+  const el = document.createElement('div');
+  el.className = 'mnote';
+  el.textContent = emoji;
+  el.style.setProperty('--x', rnd(8, 92) + '%');
+  el.style.setProperty('--dx', rnd(-40, 40) + 'px');
+  el.style.setProperty('--d', rnd(2.6, 4.2) + 's');
+  el.style.fontSize = rnd(16, 30) + 'px';
+  el.addEventListener('animationend', () => el.remove());
+  fx.appendChild(el);
+}
+function startNotes(notes) {
+  if (noteTimer) return;
+  spawnNote(pick(notes));
+  noteTimer = setInterval(() => spawnNote(pick(notes)), 520);
+}
+function stopNotes() { clearInterval(noteTimer); noteTimer = null; }
+
+/* experiencia carta + canción a pantalla completa */
+function letterStage(cfg, onDone) {
+  const hasSong = !!cfg.song;
+  const st = document.createElement('div');
+  st.className = 'letter-stage';
+  st.innerHTML = `
+    <div class="ls-head">
+      <span class="ls-emoji">${cfg.emoji}</span>
+      <h2>${cfg.title}</h2>
+      <p class="ls-sub">${cfg.sub}</p>
+    </div>
+    <div class="papiro">
+      <div class="papiro-inner" id="lsPage"></div>
+    </div>
+    <div class="ls-nav">
+      <button class="ls-arrow" id="lsPrev" type="button" aria-label="anterior">‹</button>
+      <div class="ls-dots" id="lsDots"></div>
+      <button class="ls-arrow" id="lsNext" type="button" aria-label="siguiente">›</button>
+    </div>
+    ${hasSong ? `
+    <div class="player">
+      <button class="pl-play" id="plPlay" type="button" aria-label="reproducir">▶</button>
+      <div class="pl-mid">
+        <div class="pl-title">${cfg.songTitle || 'Canción 🎶'}</div>
+        <div class="pl-bar" id="plBar"><div class="pl-fill" id="plFill"></div><div class="pl-knob" id="plKnob"></div></div>
+        <div class="pl-time"><span id="plCur">0:00</span><span id="plDur">0:00</span></div>
+      </div>
+    </div>` : ''}
+    <button class="btn gold ls-done" id="lsDone" type="button">Qué bonito 💜</button>`;
+  $('#phone').appendChild(st);
+
+  /* paginación del pergamino */
+  const pages = (cfg.pages && cfg.pages.length) ? cfg.pages : [''];
+  let pi = 0;
+  const pageEl = $('#lsPage', st), dotsEl = $('#lsDots', st);
+  const prevBtn = $('#lsPrev', st), nextBtn = $('#lsNext', st);
+  dotsEl.innerHTML = pages.map((_, i) => `<span class="ls-dot" data-p="${i}"></span>`).join('');
+  const renderPage = () => {
+    pageEl.classList.remove('turn'); void pageEl.offsetWidth; pageEl.classList.add('turn');
+    pageEl.innerHTML = pages[pi].split('\n\n')
+      .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+    pageEl.scrollTop = 0;
+    dotsEl.querySelectorAll('.ls-dot').forEach((d, i) => d.classList.toggle('on', i === pi));
+    prevBtn.disabled = pi === 0;
+    nextBtn.disabled = pi === pages.length - 1;
+  };
+  renderPage();
+  prevBtn.addEventListener('click', () => { if (pi > 0) { pi--; Snd.click(); renderPage(); } });
+  nextBtn.addEventListener('click', () => { if (pi < pages.length - 1) { pi++; Snd.click(); renderPage(); } });
+  dotsEl.querySelectorAll('.ls-dot').forEach(d =>
+    d.addEventListener('click', () => { pi = Number(d.dataset.p); Snd.click(); renderPage(); }));
+
+  /* reproductor de la canción */
+  let audio = null;
+  if (hasSong) {
+    audio = new Audio(cfg.song);
+    audio.preload = 'auto';
+    const playBtn = $('#plPlay', st), fill = $('#plFill', st), knob = $('#plKnob', st),
+      curEl = $('#plCur', st), durEl = $('#plDur', st), bar = $('#plBar', st);
+    let dragging = false;
+    const paint = () => {
+      const d = audio.duration || 0, c = audio.currentTime || 0;
+      const r = d ? clamp(c / d, 0, 1) : 0;
+      fill.style.width = (r * 100) + '%';
+      knob.style.left = (r * 100) + '%';
+      curEl.textContent = fmtTime(c);
+      durEl.textContent = fmtTime(d);
+    };
+    audio.addEventListener('loadedmetadata', paint);
+    audio.addEventListener('timeupdate', () => { if (!dragging) paint(); });
+    audio.addEventListener('play', () => { playBtn.textContent = '❚❚'; startNotes(cfg.notes); });
+    audio.addEventListener('pause', () => { playBtn.textContent = '▶'; stopNotes(); });
+    audio.addEventListener('ended', () => { playBtn.textContent = '▶'; stopNotes(); });
+    playBtn.addEventListener('click', () => {
+      if (audio.paused) audio.play().catch(() => {}); else audio.pause();
+    });
+    const seek = clientX => {
+      const rect = bar.getBoundingClientRect();
+      const r = clamp((clientX - rect.left) / rect.width, 0, 1);
+      if (audio.duration) { audio.currentTime = r * audio.duration; paint(); }
+    };
+    bar.addEventListener('pointerdown', e => { dragging = true; try { bar.setPointerCapture(e.pointerId); } catch (x) {} seek(e.clientX); });
+    bar.addEventListener('pointermove', e => { if (dragging) seek(e.clientX); });
+    bar.addEventListener('pointerup', () => { dragging = false; });
+    bar.addEventListener('pointercancel', () => { dragging = false; });
+    // autoplay: se invoca dentro del gesto de toque, así que iOS lo permite
+    audio.play().catch(() => {});
+  }
+
+  const close = () => {
+    if (audio) { audio.pause(); audio.src = ''; }
+    stopNotes();
+    st.classList.add('out');
+    setTimeout(() => st.remove(), 260);
+    if (onDone) onDone();
+  };
+  $('#lsDone', st).addEventListener('click', () => { Snd.click(); close(); });
 }
 
 /* ---------------- pasos ---------------- */
@@ -759,7 +936,9 @@ const STEP_OPENERS = [
       $('#ate', card).addEventListener('click', () => {
         hideCard();
         cakeStage(() =>
-          thanksStage(THANKS.javier, () => completeStep(4, { silent: true, confetti: false })));
+          thanksStage(THANKS.javier, () =>
+            letterStage(LETTERS.javier, () =>
+              completeStep(4, { silent: true, confetti: false }))));
       });
     };
     if ((state.phase.japon || 'quiz') === 'reveal') { showReveal(); return; }
