@@ -661,12 +661,13 @@ const LETTERS = {
     song: './media/javier-song.mp3',
     songTitle: 'Canción para ti 🎶',
     notes: ['🎵', '🎶', '🤍', '💜', '✨'],
-    // 👇👇  REEMPLAZA ESTE TEXTO POR LA CARTA REAL DE JAVIER  👇👇
+    // Foto que preparó Javier (última página, con pantalla completa + descarga)
+    photo: './media/javi-photo.jpeg',
+    photoDownloadName: 'natalia-cumple-21.jpeg',
+    // 👇👇  CARTA REAL DE JAVIER  👇👇
     pages: [
-      `Mi querida Natalia,\n\nHoy cumples veintiún años y no puedo dejar pasar este día sin escribirte. Nunca he sido muy bueno con las palabras habladas, así que déjame intentarlo aquí, con calma, para que las leas cuantas veces quieras.`,
-      `Desde que llegaste a mi vida entendí lo que de verdad importa. Te vi dar tus primeros pasos, aprender a hablar, crecer y convertirte en la mujer valiente y buena que eres hoy. Cada logro tuyo lo he celebrado en silencio, con el corazón lleno de orgullo.\n\nQuiero que sepas que pase lo que pase, siempre voy a estar. En los días buenos y en los difíciles, tu papá va a estar ahí para ti.`,
-      `Sé que ya haces tu propia vida, y así debe ser. Pero para mí siempre serás mi niña. Te deseo un año lleno de amor, de risas, de aventuras y de personas que te cuiden como mereces.\n\nGracias por ser quien eres. Gracias por dejarme ser tu papá.`,
-      `Te preparé también una canción, porque hay cosas que se dicen mejor cantando. Escúchala mientras lees esto y quédate con una sola idea:\n\nTe amo, hija. Feliz cumpleaños.\n\n— Papá 🤍`,
+      `Feliz cumpleaños 21, Natalia 🎉\n\nDeseamos que Dios bendiga tu vida, te acompañe en cada paso y haga realidad todos tus sueños.`,
+      `Nunca olvides cuánto te amamos y lo orgullosos que estamos de la mujer en la que te has convertido.\n\n¡Feliz cumpleaños, hija querida!\n\nCon todo nuestro amor,\nPapá y toda tu familia ❤️`,
     ],
     // 👆👆  FIN DEL TEXTO EDITABLE  👆👆
   },
@@ -700,6 +701,31 @@ function startNotes(notes) {
 }
 function stopNotes() { clearInterval(noteTimer); noteTimer = null; }
 
+/* descargar la foto (mismo origen → el atributo download funciona) */
+function downloadPhoto(src, name) {
+  const a = document.createElement('a');
+  a.href = src;
+  a.download = name || 'foto.jpg';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+/* visor de foto a pantalla completa, con descargar + cerrar */
+function photoViewer(src, name) {
+  const v = document.createElement('div');
+  v.className = 'photo-viewer';
+  v.innerHTML = `
+    <button class="pv-close" id="pvClose" type="button" aria-label="cerrar">✕</button>
+    <div class="pv-stage"><img src="${src}" alt="Foto de tu papá para ti"></div>
+    <button class="btn gold pv-dl" id="pvDl" type="button">⬇️ Descargar foto</button>`;
+  $('#phone').appendChild(v);
+  const close = () => { v.classList.add('out'); setTimeout(() => v.remove(), 220); };
+  $('#pvClose', v).addEventListener('click', () => { Snd.click(); close(); });
+  $('#pvDl', v).addEventListener('click', () => { Snd.click(); downloadPhoto(src, name); });
+  v.addEventListener('click', e => { if (e.target === v) close(); });
+}
+
 /* experiencia carta + canción a pantalla completa */
 function letterStage(cfg, onDone) {
   const hasSong = !!cfg.song;
@@ -731,24 +757,46 @@ function letterStage(cfg, onDone) {
     <button class="btn gold ls-done" id="lsDone" type="button">Qué bonito 💜</button>`;
   $('#phone').appendChild(st);
 
-  /* paginación del pergamino */
+  /* paginación del pergamino (+ página final con foto, si la hay) */
   const pages = (cfg.pages && cfg.pages.length) ? cfg.pages : [''];
+  const photoIdx = cfg.photo ? pages.length : -1;   // índice de la página de foto
+  const total = pages.length + (cfg.photo ? 1 : 0);
   let pi = 0;
   const pageEl = $('#lsPage', st), dotsEl = $('#lsDots', st);
   const prevBtn = $('#lsPrev', st), nextBtn = $('#lsNext', st);
-  dotsEl.innerHTML = pages.map((_, i) => `<span class="ls-dot" data-p="${i}"></span>`).join('');
+  dotsEl.innerHTML = Array.from({ length: total }, (_, i) => `<span class="ls-dot" data-p="${i}"></span>`).join('');
   const renderPage = () => {
     pageEl.classList.remove('turn'); void pageEl.offsetWidth; pageEl.classList.add('turn');
-    pageEl.innerHTML = pages[pi].split('\n\n')
-      .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+    if (pi === photoIdx) {
+      pageEl.classList.add('photo-mode');
+      pageEl.innerHTML = `
+        <figure class="ls-photo">
+          <button class="ls-photo-btn" id="lsPhotoOpen" type="button">
+            <img id="lsPhotoImg" src="${cfg.photo}" alt="Foto de tu papá para ti">
+            <span class="ls-photo-hint">🔍 Toca para verla completa</span>
+          </button>
+          <button class="btn gold ls-dl" id="lsPhotoDl" type="button">⬇️ Descargar foto</button>
+        </figure>`;
+      const img = $('#lsPhotoImg', pageEl);
+      img.addEventListener('error', () => {
+        img.replaceWith(Object.assign(document.createElement('div'),
+          { className: 'ls-photo-missing', textContent: '✨ Foto próximamente ✨' }));
+      });
+      $('#lsPhotoOpen', pageEl).addEventListener('click', () => { Snd.click(); photoViewer(cfg.photo, cfg.photoDownloadName); });
+      $('#lsPhotoDl', pageEl).addEventListener('click', () => { Snd.click(); downloadPhoto(cfg.photo, cfg.photoDownloadName); });
+    } else {
+      pageEl.classList.remove('photo-mode');
+      pageEl.innerHTML = pages[pi].split('\n\n')
+        .map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+    }
     pageEl.scrollTop = 0;
     dotsEl.querySelectorAll('.ls-dot').forEach((d, i) => d.classList.toggle('on', i === pi));
     prevBtn.disabled = pi === 0;
-    nextBtn.disabled = pi === pages.length - 1;
+    nextBtn.disabled = pi === total - 1;
   };
   renderPage();
   prevBtn.addEventListener('click', () => { if (pi > 0) { pi--; Snd.click(); renderPage(); } });
-  nextBtn.addEventListener('click', () => { if (pi < pages.length - 1) { pi++; Snd.click(); renderPage(); } });
+  nextBtn.addEventListener('click', () => { if (pi < total - 1) { pi++; Snd.click(); renderPage(); } });
   dotsEl.querySelectorAll('.ls-dot').forEach(d =>
     d.addEventListener('click', () => { pi = Number(d.dataset.p); Snd.click(); renderPage(); }));
 

@@ -846,6 +846,51 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .pl-time { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 700; color: #d8ccff; }
 .ls-done { flex: none; max-width: 100%; }
 
+/* página de foto dentro del pergamino */
+.papiro-inner.photo-mode {
+  display: flex; align-items: center; justify-content: center;
+  -webkit-mask-image: none; mask-image: none;
+}
+.ls-photo { display: flex; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
+.ls-photo-btn {
+  display: block; width: 100%; padding: 6px; border-radius: 10px;
+  background: #fff; box-shadow: 0 8px 22px rgba(60,40,10,.35);
+  border: 1px solid rgba(120,80,20,.25); position: relative; line-height: 0;
+}
+.ls-photo-btn:active { transform: scale(.98); }
+.ls-photo-btn img { width: 100%; max-height: 42vh; object-fit: contain; border-radius: 6px; }
+.ls-photo-hint {
+  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+  font-size: 11px; font-weight: 800; color: #fff; line-height: 1.2;
+  background: rgba(20,16,45,.6); padding: 4px 10px; border-radius: 999px;
+  backdrop-filter: blur(2px);
+}
+.ls-photo-missing {
+  width: 100%; height: 34vh; display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 800; color: #8a5f22;
+  border: 2px dashed rgba(120,80,20,.4); border-radius: 8px;
+}
+.ls-dl { width: auto; padding: 12px 22px; font-size: 14px; margin: 0; }
+
+/* visor de foto a pantalla completa */
+.photo-viewer {
+  position: absolute; inset: 0; z-index: 90;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
+  padding: calc(env(safe-area-inset-top, 0px) + 16px) 18px calc(env(safe-area-inset-bottom, 0px) + 18px);
+  background: rgba(6,4,16,.94); backdrop-filter: blur(6px);
+  animation: stage-in .28s ease;
+}
+.photo-viewer.out { animation: stage-out .22s ease forwards; }
+.pv-close {
+  position: absolute; top: calc(env(safe-area-inset-top, 0px) + 12px); right: 14px; z-index: 2;
+  width: 38px; height: 38px; border-radius: 50%; font-size: 18px; font-weight: 800; color: #fff;
+  background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.28);
+  display: flex; align-items: center; justify-content: center;
+}
+.pv-stage { flex: 1 1 auto; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center; }
+.pv-stage img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 8px; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+.pv-dl { flex: none; width: auto; padding: 13px 24px; font-size: 15px; margin: 0; }
+
 /* notas musicales flotando */
 .mnote {
   position: absolute; bottom: 8%; left: var(--x); z-index: 82;

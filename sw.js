@@ -1,5 +1,5 @@
 /* Service worker — Felices 21, Natalia 💜 */
-const CACHE = 'nb21-v6';
+const CACHE = 'nb21-v7';
 const ASSETS = [
   './',
   './index.html',
