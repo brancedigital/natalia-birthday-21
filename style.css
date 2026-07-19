@@ -844,7 +844,17 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
   transform: translate(-50%, -50%); box-shadow: 0 2px 6px rgba(0,0,0,.45);
 }
 .pl-time { display: flex; justify-content: space-between; font-size: 10.5px; font-weight: 700; color: #d8ccff; }
-.ls-done { flex: none; max-width: 100%; }
+
+/* botones inferiores lado a lado: Qué bonito · Llamarle */
+.ls-actions { flex: none; display: flex; gap: 10px; }
+.ls-actions .btn { flex: 1 1 0; min-width: 0; margin-top: 0; font-size: 15px; padding: 15px 12px; }
+.ls-call {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  text-decoration: none; color: #fff;
+  background: linear-gradient(135deg, #2ecc71, #12a85a);
+  box-shadow: 0 8px 20px rgba(18,168,90,.4);
+}
+.ls-call:active { transform: scale(.96); }
 
 /* página de foto dentro del pergamino */
 .papiro-inner.photo-mode {

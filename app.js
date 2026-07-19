@@ -661,6 +661,8 @@ const LETTERS = {
     song: './media/javier-song.mp3',
     songTitle: 'Canción para ti 🎶',
     notes: ['🎵', '🎶', '🤍', '💜', '✨'],
+    // Teléfono de papá: el botón "Llamarle" abre la app de llamadas del móvil
+    phone: '+573134367392',
     // Foto que preparó Javier (última página, con pantalla completa + descarga)
     photo: './media/javi-photo.jpeg',
     photoDownloadName: 'natalia-cumple-21.jpeg',
@@ -754,8 +756,12 @@ function letterStage(cfg, onDone) {
         <div class="pl-time"><span id="plCur">0:00</span><span id="plDur">0:00</span></div>
       </div>
     </div>` : ''}
-    <button class="btn gold ls-done" id="lsDone" type="button">Qué bonito 💜</button>`;
+    <div class="ls-actions">
+      <button class="btn gold ls-done" id="lsDone" type="button">Qué bonito 💜</button>
+      ${cfg.phone ? `<a class="btn ls-call" id="lsCall" href="tel:${cfg.phone}">📞 Llamarle</a>` : ''}
+    </div>`;
   $('#phone').appendChild(st);
+  if (cfg.phone) $('#lsCall', st).addEventListener('click', () => Snd.click());
 
   /* paginación del pergamino (+ página final con foto, si la hay) */
   const pages = (cfg.pages && cfg.pages.length) ? cfg.pages : [''];
