@@ -856,6 +856,29 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 }
 .ls-call:active { transform: scale(.96); }
 
+/* hoja para elegir teléfono / WhatsApp */
+.call-sheet {
+  position: absolute; inset: 0; z-index: 92;
+  display: flex; align-items: flex-end; justify-content: center;
+  background: rgba(6,4,16,.6); backdrop-filter: blur(3px);
+  animation: stage-in .22s ease;
+}
+.call-sheet.out { animation: stage-out .2s ease forwards; }
+.cs-panel {
+  width: 100%; max-width: 410px;
+  background: linear-gradient(180deg, #fffdf7, #fff);
+  border-radius: 22px 22px 0 0;
+  padding: 20px 18px calc(env(safe-area-inset-bottom, 0px) + 18px);
+  box-shadow: 0 -18px 50px rgba(0,0,0,.5);
+  animation: sheet-up .3s cubic-bezier(.2,1.2,.4,1);
+}
+@keyframes sheet-up { from { transform: translateY(100%); } to { transform: none; } }
+.cs-title { text-align: center; font-size: 16px; font-weight: 900; color: var(--ink); margin-bottom: 6px; }
+.cs-panel .btn { display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; }
+.cs-tel { /* morado por defecto */ }
+.cs-wa { color: #fff; background: linear-gradient(135deg, #25d366, #12a85a); box-shadow: 0 8px 20px rgba(18,168,90,.4); }
+.cs-cancel { }
+
 /* página de foto dentro del pergamino */
 .papiro-inner.photo-mode {
   display: flex; align-items: center; justify-content: center;

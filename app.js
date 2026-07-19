@@ -728,6 +728,26 @@ function photoViewer(src, name) {
   v.addEventListener('click', e => { if (e.target === v) close(); });
 }
 
+/* elegir cómo llamar: teléfono normal o WhatsApp */
+function callChooser(phone) {
+  const waNum = String(phone).replace(/[^0-9]/g, ''); // wa.me sin + ni símbolos
+  const sheet = document.createElement('div');
+  sheet.className = 'call-sheet';
+  sheet.innerHTML = `
+    <div class="cs-panel">
+      <div class="cs-title">¿Cómo quieres llamar a papá? 🤍</div>
+      <a class="btn cs-tel" href="tel:${phone}">📞 Llamada normal</a>
+      <a class="btn cs-wa" href="https://wa.me/${waNum}" target="_blank" rel="noopener">💬 WhatsApp</a>
+      <button class="btn ghost cs-cancel" type="button">Cancelar</button>
+    </div>`;
+  $('#phone').appendChild(sheet);
+  const close = () => { sheet.classList.add('out'); setTimeout(() => sheet.remove(), 200); };
+  sheet.addEventListener('click', e => { if (e.target === sheet) close(); });
+  $('.cs-cancel', sheet).addEventListener('click', () => { Snd.click(); close(); });
+  $('.cs-tel', sheet).addEventListener('click', () => { Snd.click(); setTimeout(close, 60); });
+  $('.cs-wa', sheet).addEventListener('click', () => { Snd.click(); setTimeout(close, 60); });
+}
+
 /* experiencia carta + canción a pantalla completa */
 function letterStage(cfg, onDone) {
   const hasSong = !!cfg.song;
@@ -758,10 +778,10 @@ function letterStage(cfg, onDone) {
     </div>` : ''}
     <div class="ls-actions">
       <button class="btn gold ls-done" id="lsDone" type="button">Qué bonito 💜</button>
-      ${cfg.phone ? `<a class="btn ls-call" id="lsCall" href="tel:${cfg.phone}">📞 Llamarle</a>` : ''}
+      ${cfg.phone ? `<button class="btn ls-call" id="lsCall" type="button">📞 Llamarle</button>` : ''}
     </div>`;
   $('#phone').appendChild(st);
-  if (cfg.phone) $('#lsCall', st).addEventListener('click', () => Snd.click());
+  if (cfg.phone) $('#lsCall', st).addEventListener('click', () => { Snd.click(); callChooser(cfg.phone); });
 
   /* paginación del pergamino (+ página final con foto, si la hay) */
   const pages = (cfg.pages && cfg.pages.length) ? cfg.pages : [''];
