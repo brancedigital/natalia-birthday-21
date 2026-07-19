@@ -781,7 +781,6 @@ function letterStage(cfg, onDone) {
             <img id="lsPhotoImg" src="${cfg.photo}" alt="Foto de tu papá para ti">
             <span class="ls-photo-hint">🔍 Toca para verla completa</span>
           </button>
-          <button class="btn gold ls-dl" id="lsPhotoDl" type="button">⬇️ Descargar foto</button>
         </figure>`;
       const img = $('#lsPhotoImg', pageEl);
       img.addEventListener('error', () => {
@@ -789,7 +788,6 @@ function letterStage(cfg, onDone) {
           { className: 'ls-photo-missing', textContent: '✨ Foto próximamente ✨' }));
       });
       $('#lsPhotoOpen', pageEl).addEventListener('click', () => { Snd.click(); photoViewer(cfg.photo, cfg.photoDownloadName); });
-      $('#lsPhotoDl', pageEl).addEventListener('click', () => { Snd.click(); downloadPhoto(cfg.photo, cfg.photoDownloadName); });
     } else {
       pageEl.classList.remove('photo-mode');
       pageEl.innerHTML = pages[pi].split('\n\n')
