@@ -834,6 +834,24 @@ button { font-family: inherit; border: none; background: none; cursor: pointer; 
 .pl-play:active { transform: scale(.94); }
 .pl-mid { flex: 1 1 auto; min-width: 0; }
 .pl-title { font-size: 12px; font-weight: 800; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+/* columna de acciones a la derecha: descargar arriba, repetir abajo */
+.pl-tools {
+  flex: none; align-self: stretch;
+  display: flex; flex-direction: column; justify-content: space-between; gap: 6px;
+}
+.pl-icon {
+  width: 30px; height: 30px; border-radius: 9px; font-size: 13px; line-height: 1;
+  display: flex; align-items: center; justify-content: center; color: #fff;
+  background: rgba(255,255,255,.14); border: 1px solid rgba(255,255,255,.22);
+  transition: background .2s, box-shadow .2s, transform .1s;
+}
+.pl-icon:active { transform: scale(.9); }
+.pl-icon.on {
+  background: linear-gradient(135deg, #ffe9a3, #f2a71b);
+  border-color: rgba(255,255,255,.5);
+  box-shadow: 0 0 10px rgba(242,167,27,.75);
+}
 .pl-bar {
   position: relative; height: 8px; border-radius: 999px; margin: 9px 0 5px;
   background: rgba(255,255,255,.22); cursor: pointer; touch-action: none;

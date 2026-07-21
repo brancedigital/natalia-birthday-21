@@ -724,6 +724,7 @@ const LETTERS = {
     sub: 'La escribió él mismo — tómate tu tiempo 🤍',
     song: './media/javier-song.mp3',
     songTitle: 'Canción para ti 🎶',
+    songDownloadName: 'cancion-de-papa.mp3',
     notes: ['🎵', '🎶', '🤍', '💜', '✨'],
     // Teléfono de papá: el botón "Llamarle" abre la app de llamadas del móvil
     phone: '+573134367392',
@@ -767,8 +768,8 @@ function startNotes(notes) {
 }
 function stopNotes() { clearInterval(noteTimer); noteTimer = null; }
 
-/* descargar la foto (mismo origen → el atributo download funciona) */
-function downloadPhoto(src, name) {
+/* descargar un archivo (mismo origen → el atributo download funciona) */
+function downloadFile(src, name) {
   const a = document.createElement('a');
   a.href = src;
   a.download = name || 'foto.jpg';
@@ -788,7 +789,7 @@ function photoViewer(src, name) {
   $('#phone').appendChild(v);
   const close = () => { v.classList.add('out'); setTimeout(() => v.remove(), 220); };
   $('#pvClose', v).addEventListener('click', () => { Snd.click(); close(); });
-  $('#pvDl', v).addEventListener('click', () => { Snd.click(); downloadPhoto(src, name); });
+  $('#pvDl', v).addEventListener('click', () => { Snd.click(); downloadFile(src, name); });
   v.addEventListener('click', e => { if (e.target === v) close(); });
 }
 
@@ -838,6 +839,10 @@ function letterStage(cfg, onDone) {
         <div class="pl-title">${cfg.songTitle || 'Canción 🎶'}</div>
         <div class="pl-bar" id="plBar"><div class="pl-fill" id="plFill"></div><div class="pl-knob" id="plKnob"></div></div>
         <div class="pl-time"><span id="plCur">0:00</span><span id="plDur">0:00</span></div>
+      </div>
+      <div class="pl-tools">
+        <button class="pl-icon" id="plDl" type="button" aria-label="descargar canción" title="Descargar">⬇️</button>
+        <button class="pl-icon" id="plLoop" type="button" aria-label="repetir" aria-pressed="false" title="Repetir">🔁</button>
       </div>
     </div>` : ''}
     <div class="ls-actions">
@@ -921,6 +926,18 @@ function letterStage(cfg, onDone) {
     bar.addEventListener('pointermove', e => { if (dragging) seek(e.clientX); });
     bar.addEventListener('pointerup', () => { dragging = false; });
     bar.addEventListener('pointercancel', () => { dragging = false; });
+    // repetir en bucle (opcional) + descargar la canción
+    const loopBtn = $('#plLoop', st);
+    loopBtn.addEventListener('click', () => {
+      Snd.click();
+      audio.loop = !audio.loop;
+      loopBtn.classList.toggle('on', audio.loop);
+      loopBtn.setAttribute('aria-pressed', audio.loop ? 'true' : 'false');
+    });
+    $('#plDl', st).addEventListener('click', () => {
+      Snd.click();
+      downloadFile(cfg.song, cfg.songDownloadName || 'cancion.mp3');
+    });
     // autoplay: se invoca dentro del gesto de toque, así que iOS lo permite
     audio.play().catch(() => {});
   }
