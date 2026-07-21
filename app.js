@@ -230,42 +230,38 @@ function svgHome() {
    Osito de peluche marrón claro: mucho más alto que ancho (tipo palito),
    con un limoncito en la cabeza. Se dibuja en SVG para poder escalarlo. */
 function svgPlush(w = 60) {
-  return `<svg class="plush-svg" viewBox="0 0 60 190" width="${w}" role="img" aria-label="Osito Limón">
-    <!-- piernas y pies (finitos y largos) -->
-    <rect x="21.5" y="140" width="8" height="42" rx="4" fill="#c0925c"/>
-    <rect x="30.5" y="140" width="8" height="42" rx="4" fill="#b5854f"/>
-    <ellipse cx="25.5" cy="182" rx="5" ry="3.8" fill="#cda06b"/>
-    <ellipse cx="34.5" cy="182" rx="5" ry="3.8" fill="#c0925c"/>
-    <!-- brazos larguísimos pegados al cuerpo -->
-    <rect x="12" y="54" width="7" height="58" rx="3.5" fill="#c0925c"/>
-    <rect x="41" y="54" width="7" height="58" rx="3.5" fill="#b5854f"/>
-    <!-- cuerpo tipo palito -->
-    <rect x="21" y="45" width="18" height="106" rx="9" fill="#cda06b"/>
-    <ellipse cx="30" cy="104" rx="6" ry="33" fill="#eddcc0"/>
-    <!-- orejas -->
-    <circle cx="20.5" cy="23.5" r="5.8" fill="#cda06b"/>
-    <circle cx="39.5" cy="23.5" r="5.8" fill="#cda06b"/>
-    <circle cx="20.5" cy="23.5" r="3" fill="#e8c8a8"/>
-    <circle cx="39.5" cy="23.5" r="3" fill="#e8c8a8"/>
+  return `<svg class="plush-svg" viewBox="0 0 60 148" width="${w}" role="img" aria-label="Capibara Limón">
+    <!-- bracitos pequeñitos, en diagonal hacia arriba -->
+    <ellipse cx="13.5" cy="50" rx="4.5" ry="8" fill="#bb8a52" transform="rotate(-40 13.5 50)"/>
+    <ellipse cx="46.5" cy="50" rx="4.5" ry="8" fill="#b07f48" transform="rotate(40 46.5 50)"/>
+    <!-- cuerpo: largo y rechoncho, tipo capibara -->
+    <rect x="16.5" y="36" width="27" height="102" rx="13.5" fill="#c99a63"/>
+    <!-- barriga marrón oscura -->
+    <ellipse cx="30" cy="92" rx="9.5" ry="34" fill="#9d6839"/>
+    <!-- patitas -->
+    <ellipse cx="24.5" cy="136" rx="6.2" ry="4.6" fill="#8f5f33"/>
+    <ellipse cx="35.5" cy="136" rx="6.2" ry="4.6" fill="#8a5a30"/>
+    <!-- orejitas oscuras -->
+    <ellipse cx="19" cy="15.8" rx="6.3" ry="5.6" fill="#8f5f33"/>
+    <ellipse cx="41" cy="15.8" rx="6.3" ry="5.6" fill="#8a5a30"/>
     <!-- cabeza -->
-    <ellipse cx="30" cy="34" rx="13.5" ry="12.5" fill="#cda06b"/>
-    <ellipse cx="21" cy="37.5" rx="2.7" ry="1.8" fill="#f0a9a0" opacity=".5"/>
-    <ellipse cx="39" cy="37.5" rx="2.7" ry="1.8" fill="#f0a9a0" opacity=".5"/>
-    <!-- hocico -->
-    <ellipse cx="30" cy="39.5" rx="6.5" ry="4.8" fill="#eddcc0"/>
-    <ellipse cx="30" cy="37.4" rx="2.3" ry="1.7" fill="#4a3524"/>
-    <path d="M30 39.2 v2.1 M30 41.3 q-2.1 1.7 -3.8 .1 M30 41.3 q2.1 1.7 3.8 .1"
-      stroke="#4a3524" stroke-width="1.1" fill="none" stroke-linecap="round"/>
-    <!-- ojitos -->
-    <circle cx="24.4" cy="31.4" r="2.1" fill="#4a3524"/>
-    <circle cx="35.6" cy="31.4" r="2.1" fill="#4a3524"/>
-    <circle cx="25.1" cy="30.6" r=".8" fill="#fff"/>
-    <circle cx="36.3" cy="30.6" r=".8" fill="#fff"/>
+    <ellipse cx="30" cy="27" rx="16" ry="11.5" fill="#c99a63"/>
+    <!-- hocico marroncito -->
+    <ellipse cx="30" cy="32.5" rx="9.5" ry="6" fill="#d9ab74"/>
+    <!-- nariz marrón circular -->
+    <circle cx="30" cy="29.8" r="2.9" fill="#6b4a2f"/>
+    <!-- boquita sonriendo -->
+    <path d="M30 32.6 v1.7 M30 34.3 q-2.7 2.1 -4.6 .1 M30 34.3 q2.7 2.1 4.6 .1"
+      stroke="#6b4a2f" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <!-- ojitos rasgados: arcos cerrados y contentos, en diagonal -->
+    <path d="M20.8 26.4 Q24.2 22.5 27.6 24.9" stroke="#5a3d26" stroke-width="2.2"
+      fill="none" stroke-linecap="round"/>
+    <path d="M39.2 26.4 Q35.8 22.5 32.4 24.9" stroke="#5a3d26" stroke-width="2.2"
+      fill="none" stroke-linecap="round"/>
     <!-- limoncito en la cabeza -->
-    <ellipse cx="30" cy="15.5" rx="6.5" ry="5" fill="#ffe04a"/>
-    <ellipse cx="28" cy="14.2" rx="2.4" ry="1.6" fill="#fff5a8" opacity=".85"/>
-    <path d="M36.2 14.6 q2.1 -.5 2.8 -1.7" stroke="#f2c518" stroke-width="1.7" fill="none" stroke-linecap="round"/>
-    <path d="M30 10.4 q3.1 -3 6.5 -1.9 q-1.4 3.2 -4.9 3 z" fill="#5fbf5a"/>
+    <ellipse cx="30" cy="9.6" rx="7.5" ry="5.9" fill="#ffd23f"/>
+    <ellipse cx="27.6" cy="8.2" rx="2.6" ry="1.7" fill="#ffe89a" opacity=".7"/>
+    <path d="M30 4 q3.3 -3 6.7 -1.9 q-1.4 3.4 -5.1 3.2 z" fill="#5fbf5a"/>
   </svg>`;
 }
 
@@ -958,7 +954,7 @@ function letterStage(cfg, onDone) {
    cortarlo. 5 intentos, ~20% por intento… pero el último SIEMPRE
    corta (el recuerdo real: lo conseguimos 💜).
    ============================================================ */
-const PLUSH_NAME = 'Osito Limón';
+const PLUSH_NAME = 'Capibara Limón';
 const PLUSH_STORY = 'En los recreativos del Sol Mall había una máquina de esas de cortar el hilo con una tijera. Pagamos, apunté bien… y el hilo se cortó. El osito cayó y desde ese día se vino a casa con nosotros. 💜';
 
 function treasureReveal(host, onOk, opts = {}) {
