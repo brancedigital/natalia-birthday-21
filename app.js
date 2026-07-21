@@ -119,6 +119,20 @@ const Snd = {
   clink()   { this.tone(1568, 0.3, 'sine', 0.13); this.tone(2093, 0.42, 'sine', 0.09, 0.09); },
   blow()    { this.noise(0.85, 0.3); },
   firework(){ this.tone(70, 0.35, 'sine', 0.18, 0, 260); this.noise(0.45, 0.1); },
+  /* --- recreativos / casino --- */
+  coin()    { [988, 1319].forEach((f, i) => this.tone(f, 0.08, 'square', 0.11, i * 0.07)); },
+  snip()    { this.tone(2200, 0.04, 'square', 0.09); this.tone(1700, 0.05, 'square', 0.08, 0.05); },
+  buzz()    { this.tone(170, 0.32, 'sawtooth', 0.11, 0, 110); },
+  slot()    { for (let i = 0; i < 12; i++) this.tone(520 + ((i * 7) % 5) * 60, 0.045, 'square', 0.05, i * 0.055); },
+  jackpot() { for (let i = 0; i < 10; i++) this.tone(660 + i * 90, 0.07, 'square', 0.09, i * 0.05); this.noise(0.5, 0.12); },
+  /* fanfarria tipo "objeto conseguido" */
+  treasure() {
+    [[523.25, 0], [659.25, .13], [783.99, .26], [1046.5, .39]]
+      .forEach(([f, w]) => this.tone(f, 0.2, 'triangle', 0.16, w));
+    this.tone(1046.5, 0.95, 'triangle', 0.17, 0.56);
+    this.tone(1567.98, 0.95, 'sine', 0.07, 0.56);
+    [261.63, 392].forEach(f => this.tone(f, 0.8, 'sine', 0.085, 0.56));
+  },
 };
 
 /* ---------------- layout del mundo ---------------- */
@@ -209,6 +223,49 @@ function svgHome() {
     <rect x="56" y="68" width="20" height="18" fill="#ffe9a3"><animate attributeName="opacity" values="1;.55;1" dur="3s" repeatCount="indefinite"/></rect>
     <rect x="126" y="68" width="20" height="18" fill="#ffe9a3"><animate attributeName="opacity" values=".6;1;.6" dur="3.6s" repeatCount="indefinite"/></rect>
     <rect x="128" y="18" width="12" height="24" fill="#6e4a3a"/>
+  </svg>`;
+}
+
+/* ---------------- el Osito Limón (peluche dibujado, no emoji) ----------------
+   Osito de peluche marrón claro: mucho más alto que ancho (tipo palito),
+   con un limoncito en la cabeza. Se dibuja en SVG para poder escalarlo. */
+function svgPlush(w = 60) {
+  return `<svg class="plush-svg" viewBox="0 0 60 190" width="${w}" role="img" aria-label="Osito Limón">
+    <!-- piernas y pies (finitos y largos) -->
+    <rect x="21.5" y="140" width="8" height="42" rx="4" fill="#c0925c"/>
+    <rect x="30.5" y="140" width="8" height="42" rx="4" fill="#b5854f"/>
+    <ellipse cx="25.5" cy="182" rx="5" ry="3.8" fill="#cda06b"/>
+    <ellipse cx="34.5" cy="182" rx="5" ry="3.8" fill="#c0925c"/>
+    <!-- brazos larguísimos pegados al cuerpo -->
+    <rect x="12" y="54" width="7" height="58" rx="3.5" fill="#c0925c"/>
+    <rect x="41" y="54" width="7" height="58" rx="3.5" fill="#b5854f"/>
+    <!-- cuerpo tipo palito -->
+    <rect x="21" y="45" width="18" height="106" rx="9" fill="#cda06b"/>
+    <ellipse cx="30" cy="104" rx="6" ry="33" fill="#eddcc0"/>
+    <!-- orejas -->
+    <circle cx="20.5" cy="23.5" r="5.8" fill="#cda06b"/>
+    <circle cx="39.5" cy="23.5" r="5.8" fill="#cda06b"/>
+    <circle cx="20.5" cy="23.5" r="3" fill="#e8c8a8"/>
+    <circle cx="39.5" cy="23.5" r="3" fill="#e8c8a8"/>
+    <!-- cabeza -->
+    <ellipse cx="30" cy="34" rx="13.5" ry="12.5" fill="#cda06b"/>
+    <ellipse cx="21" cy="37.5" rx="2.7" ry="1.8" fill="#f0a9a0" opacity=".5"/>
+    <ellipse cx="39" cy="37.5" rx="2.7" ry="1.8" fill="#f0a9a0" opacity=".5"/>
+    <!-- hocico -->
+    <ellipse cx="30" cy="39.5" rx="6.5" ry="4.8" fill="#eddcc0"/>
+    <ellipse cx="30" cy="37.4" rx="2.3" ry="1.7" fill="#4a3524"/>
+    <path d="M30 39.2 v2.1 M30 41.3 q-2.1 1.7 -3.8 .1 M30 41.3 q2.1 1.7 3.8 .1"
+      stroke="#4a3524" stroke-width="1.1" fill="none" stroke-linecap="round"/>
+    <!-- ojitos -->
+    <circle cx="24.4" cy="31.4" r="2.1" fill="#4a3524"/>
+    <circle cx="35.6" cy="31.4" r="2.1" fill="#4a3524"/>
+    <circle cx="25.1" cy="30.6" r=".8" fill="#fff"/>
+    <circle cx="36.3" cy="30.6" r=".8" fill="#fff"/>
+    <!-- limoncito en la cabeza -->
+    <ellipse cx="30" cy="15.5" rx="6.5" ry="5" fill="#ffe04a"/>
+    <ellipse cx="28" cy="14.2" rx="2.4" ry="1.6" fill="#fff5a8" opacity=".85"/>
+    <path d="M36.2 14.6 q2.1 -.5 2.8 -1.7" stroke="#f2c518" stroke-width="1.7" fill="none" stroke-linecap="round"/>
+    <path d="M30 10.4 q3.1 -3 6.5 -1.9 q-1.4 3.2 -4.9 3 z" fill="#5fbf5a"/>
   </svg>`;
 }
 
@@ -350,6 +407,11 @@ function buildWorld() {
       style="left:72%; top:${NODE_XY[4][1]}px;">
       <span class="rc-scene"><span class="rc-main">🧔🏻</span><span class="rc-prop">🎸</span></span>
       <span class="rc-tip">Carta + canción 🤍</span>
+    </button>
+    <button class="revive-char" id="revivePeluche" type="button" hidden
+      style="left:26%; top:${NODE_XY[5][1]}px;">
+      <span class="rc-scene rc-svg">${svgPlush(18)}</span>
+      <span class="rc-tip">El ${PLUSH_NAME} 🍋</span>
     </button>`;
 
   world.innerHTML = html;
@@ -375,6 +437,7 @@ function buildWorld() {
 
   $('#reviveMerce').addEventListener('click', () => { Snd.click(); thanksStage(THANKS.merce, null); });
   $('#reviveJavier').addEventListener('click', () => { Snd.click(); letterStage(LETTERS.javier, null); });
+  $('#revivePeluche').addEventListener('click', () => { Snd.click(); arcadeMemory(); });
 }
 
 function setWalkerPos(x, y) {
@@ -452,9 +515,10 @@ function refresh() {
   $('#progressBadge').textContent = `${Math.min(state.step, 9)}/9`;
 
   // personajes revivibles: aparecen tras completar su paso
-  const rMerce = $('#reviveMerce'), rJavier = $('#reviveJavier');
-  if (rMerce) rMerce.hidden = state.step < 1;   // tras el desayuno
-  if (rJavier) rJavier.hidden = state.step < 5; // tras la comida (paso japón)
+  const rMerce = $('#reviveMerce'), rJavier = $('#reviveJavier'), rPeluche = $('#revivePeluche');
+  if (rMerce) rMerce.hidden = state.step < 1;     // tras el desayuno
+  if (rJavier) rJavier.hidden = state.step < 5;   // tras la comida (paso japón)
+  if (rPeluche) rPeluche.hidden = state.step < 6; // tras el Sol Mall (peluche ganado)
 }
 
 /* ---------------- overlay / cards ---------------- */
@@ -871,6 +935,144 @@ function letterStage(cfg, onDone) {
   $('#lsDone', st).addEventListener('click', () => { Snd.click(); close(); });
 }
 
+/* ============================================================
+   MÁQUINA DE RECREATIVOS — el Osito Limón 🍋
+   Pagas por intento, la tijera oscila sobre el hilo y hay que
+   cortarlo. 5 intentos, ~20% por intento… pero el último SIEMPRE
+   corta (el recuerdo real: lo conseguimos 💜).
+   ============================================================ */
+const PLUSH_NAME = 'Osito Limón';
+const PLUSH_STORY = 'En los recreativos del Sol Mall había una máquina de esas de cortar el hilo con una tijera. Pagamos, apunté bien… y el hilo se cortó. El osito cayó y desde ese día se vino a casa con nosotros. 💜';
+
+function treasureReveal(host, onOk, opts = {}) {
+  const tr = document.createElement('div');
+  tr.className = 'treasure';
+  tr.innerHTML = `
+    <div class="tr-rays"></div>
+    <div class="tr-item">${svgPlush(76)}</div>
+    <div class="tr-caption">
+      <div class="tr-get">${opts.title || `¡Conseguiste el <b>${PLUSH_NAME}</b>! 🍋`}</div>
+      <p class="tr-text">${opts.text || PLUSH_STORY}</p>
+    </div>
+    <button class="btn gold" id="trOk" type="button">${opts.cta || '¡Qué recuerdo! 💜'}</button>`;
+  host.appendChild(tr);
+  Snd.treasure();
+  fireworks(2200);
+  $('#trOk', tr).addEventListener('click', () => { Snd.click(); onOk && onOk(); });
+}
+
+function arcadeStage(onWin) {
+  const st = document.createElement('div');
+  st.className = 'arcade-stage';
+  st.innerHTML = `
+    <div class="arc-head">
+      <h2>🕹️ Peluches Míticos</h2>
+      <p class="arc-sub">Corta el hilo y llévate el ${PLUSH_NAME} 🍋</p>
+    </div>
+    <div class="cabinet">
+      <div class="cab-marquee"><span>★ PELUCHES MÍTICOS ★</span></div>
+      <div class="cab-glass">
+        <div class="cab-bar"></div>
+        <div class="string" id="arcString"></div>
+        <div class="hang" id="arcHang">${svgPlush(44)}</div>
+        <div class="scissors" id="arcScissors">✂️</div>
+        <div class="cab-floor"></div>
+        <div class="cab-door" id="arcDoor"><span>PREMIOS</span></div>
+      </div>
+      <div class="cab-panel">
+        <div class="cab-tries">Intentos <b id="arcTries">5</b></div>
+        <button class="cab-btn" id="arcCut" type="button">✂️ ¡CORTAR!</button>
+      </div>
+    </div>
+    <div class="arc-msg" id="arcMsg">Dale a <b>¡CORTAR!</b> cuando la tijera esté sobre el hilo…</div>`;
+  $('#phone').appendChild(st);
+  Snd.slot();
+
+  const sc = $('#arcScissors', st), msg = $('#arcMsg', st),
+    triesEl = $('#arcTries', st), cutBtn = $('#arcCut', st);
+  let tries = 5, curPct = 50, running = true, won = false, rafId = 0, t0 = performance.now();
+
+  const loop = now => {
+    if (!running) return;
+    curPct = 50 + Math.sin((now - t0) / 1000 * 3.4) * 34;
+    sc.style.left = curPct + '%';
+    rafId = requestAnimationFrame(loop);
+  };
+  rafId = requestAnimationFrame(loop);
+
+  const win = () => {
+    won = true;
+    cutBtn.disabled = true;
+    Snd.jackpot();
+    $('#arcString', st).classList.add('cut');
+    $('#arcHang', st).classList.add('drop');
+    $('#arcDoor', st).classList.add('open');
+    msg.innerHTML = '¡EL HILO SE CORTÓ! 🎉';
+    confettiBurst(70, ['#ffd23f', '#ff5fa2', '#7ef3ff', '#ffffff']);
+    setTimeout(() => treasureReveal(st, () => {
+      st.classList.add('out');
+      setTimeout(() => st.remove(), 260);
+      onWin && onWin();
+    }), 1600);
+  };
+
+  const cut = () => {
+    if (!running || won) return;
+    running = false;
+    cancelAnimationFrame(rafId);
+    tries--;
+    triesEl.textContent = tries;
+    Snd.coin();                       // se paga cada intento 😅
+    const aligned = Math.abs(curPct - 50) <= 7;
+    const success = tries === 0 || (aligned && Math.random() < 0.2);
+    if (success && !aligned) {         // último intento: la tijera se va al hilo
+      sc.style.transition = 'left .25s ease';
+      sc.style.left = '50%';
+    }
+    setTimeout(() => {
+      Snd.snip();
+      sc.classList.add('snip');
+      setTimeout(() => {
+        sc.classList.remove('snip');
+        sc.style.transition = '';
+        if (success) { win(); return; }
+        Snd.buzz();
+        msg.innerHTML = aligned
+          ? pick(['¡Casi! El hilo se escapó 😤', 'Uff… la rozó 😅', 'Estas máquinas están trucadas 😾'])
+          : pick(['La tijera pasó de largo 🙈', 'Ni cerca 😜', 'Falló el hilo… otra vez 😅']);
+        t0 = performance.now();
+        running = true;
+        rafId = requestAnimationFrame(loop);
+      }, 300);
+    }, success && !aligned ? 260 : 0);
+  };
+  cutBtn.addEventListener('click', cut);
+}
+
+/* recuerdo del peluche (personaje del camino) */
+function arcadeMemory() {
+  const st = document.createElement('div');
+  st.className = 'arcade-stage memory';
+  st.innerHTML = `
+    <div class="tr-rays soft"></div>
+    <div class="tr-item">${svgPlush(76)}</div>
+    <div class="tr-caption">
+      <div class="tr-get">El <b>${PLUSH_NAME}</b> 🍋</div>
+      <p class="tr-text">${PLUSH_STORY}</p>
+    </div>
+    <div class="ls-actions">
+      <button class="btn gold" id="memClose" type="button">Qué recuerdo 💜</button>
+      <button class="btn" id="memPlay" type="button">🕹️ Jugar otra vez</button>
+    </div>`;
+  $('#phone').appendChild(st);
+  const close = () => { st.classList.add('out'); setTimeout(() => st.remove(), 260); };
+  $('#memClose', st).addEventListener('click', () => { Snd.click(); close(); });
+  $('#memPlay', st).addEventListener('click', () => {
+    Snd.click(); close();
+    arcadeStage(() => arcadeMemory());   // al ganar, vuelve al recuerdo
+  });
+}
+
 /* ---------------- pasos ---------------- */
 function completeStep(i, opts = {}) {
   hideCard();
@@ -1039,7 +1241,10 @@ const STEP_OPENERS = [
       </ul>
       <p class="plan-warn">Disfruta lo que puedas… se acerca una guerra ⚔️🔥</p>
       <button class="btn gold" id="go">Ya lo hicimos ✅</button>`, { papyrus: true });
-    $('#go', card).addEventListener('click', () => completeStep(5, { sound: 'epic', colors: ['#e8e2d0', '#ffd23f', '#c0392b', '#fff'] }));
+    $('#go', card).addEventListener('click', () => {
+      hideCard();
+      arcadeStage(() => completeStep(5, { silent: true, confetti: false }));
+    });
   },
 
   // 6 — arena: quiz → cine
